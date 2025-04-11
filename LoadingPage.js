@@ -1,26 +1,17 @@
-import React, { useEffect, useRef } from 'react';
-import { StyleSheet, View, Animated } from 'react-native';
-import { moveLogoUp, fadeInMoneyMind } from './Actions'; 
+import React from 'react';
+import { StyleSheet, View, Image } from 'react-native';
 
 export default function LoadingPage() {
-  const logoPosition = useRef(new Animated.Value(0)).current;
-  const moneyMindOpacity = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    moveLogoUp(logoPosition);
-    fadeInMoneyMind(moneyMindOpacity);
-  }, []);
-
   return (
     <View style={styles.container}>
-      <Animated.Image 
+      <Image 
         source={require('./assets/logo.png')} 
-        style={[styles.logo, { transform: [{ translateY: logoPosition }] }]} 
+        style={styles.logo} 
       />
 
-      <Animated.Image 
+      <Image 
         source={require('./assets/MoneyMind.png')} 
-        style={[styles.moneyMind, { opacity: moneyMindOpacity }]} 
+        style={styles.moneyMind} 
       />
     </View>
   );

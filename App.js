@@ -1,16 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import LoadingPage from './LoadingPage'; 
+import LoginPage from './LoginPage'; 
 
 export default function App() {
+  const [showLogin, setShowLogin] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setShowLogin(true);
+    }, 2000); // Show LoginPage after 3 seconds (adjust if needed)
+  }, []);
+
   return (
     <LinearGradient
       colors={['#000000', '#171717', '#171717', '#232323', '#3b3b3b', '#3b3b3b','#4f4f4f']}
       style={styles.background}
     >
       <View style={styles.centeredContainer}>
-        <LoadingPage /> 
+        {showLogin ? <LoginPage /> : <LoadingPage />}
       </View>
     </LinearGradient>
   );
