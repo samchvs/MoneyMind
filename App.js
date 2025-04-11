@@ -6,11 +6,11 @@ import LoadingPage from './LoadingPage';
 export default function App() {
   return (
     <LinearGradient
-      colors={['#000000', '#171717', '#171717', '#232323', '#3b3b3b', '#4f4f4f']}
+      colors={['#000000', '#171717', '#171717', '#232323', '#3b3b3b', '#3b3b3b','#4f4f4f']}
       style={styles.background}
     >
       <View style={styles.centeredContainer}>
-        <LoadingPage /> {/* Render the loading screen */}
+        <LoadingPage /> 
       </View>
     </LinearGradient>
   );
