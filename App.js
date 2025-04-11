@@ -1,0 +1,58 @@
+import React, { useEffect, useRef } from 'react';
+import { StyleSheet, View, Animated } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { moveLogoUp, fadeInMoneyMind } from './Actions'; 
+
+export default function App() {
+  const logoPosition = useRef(new Animated.Value(0)).current; 
+  const moneyMindOpacity = useRef(new Animated.Value(0)).current; 
+
+  useEffect(() => {
+    moveLogoUp(logoPosition); 
+    fadeInMoneyMind(moneyMindOpacity); 
+  }, []);
+
+  return (
+    <LinearGradient
+      colors={['#000000', '#171717', '#171717', '#232323', '#3b3b3b', '#4f4f4f']}
+      style={styles.background}
+    >
+      <View style={styles.centeredContainer}>
+        {}
+        <Animated.Image 
+          source={require('./assets/logo.png')} 
+          style={[styles.logo, { transform: [{ translateY: logoPosition }] }]} 
+        />
+
+        {}
+        <Animated.Image 
+          source={require('./assets/MoneyMind.png')} 
+          style={[styles.moneyMind, { opacity: moneyMindOpacity }]} 
+        />
+      </View>
+    </LinearGradient>
+  );
+}
+
+const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
+  centeredContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logo: {
+    width: 450,
+    height: 450,
+    resizeMode: 'contain',
+    marginTop: -100,
+  },
+  moneyMind: {
+    width: 200, 
+    height: 100, 
+    resizeMode: 'contain',
+    marginTop: -170, 
+  },
+});
