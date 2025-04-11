@@ -10,7 +10,7 @@ export default function App() {
   useEffect(() => {
     setTimeout(() => {
       setShowLogin(true);
-    }, 2000); 
+    }, 1000); 
   }, []);
 
   return (
