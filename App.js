@@ -10,7 +10,7 @@ export default function App() {
   useEffect(() => {
     setTimeout(() => {
       setShowLogin(true);
-    }, 2000); // Show LoginPage after 3 seconds (adjust if needed)
+    }, 2000); 
   }, []);
 
   return (

@@ -2,7 +2,7 @@ import { Animated } from 'react-native';
 
 export const moveLogoUp = (animatedValue, distance) => {
   Animated.timing(animatedValue, {
-    toValue: distance,  // Move by the given distance
+    toValue: distance,  
     duration: 1000,
     useNativeDriver: true,
   }).start();

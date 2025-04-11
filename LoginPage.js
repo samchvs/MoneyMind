@@ -7,8 +7,8 @@ export default function LoginPage() {
   const moneyMindPosition = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    moveLogoUp(logoPosition, -50);   // Move logo up by 50 units
-    moveLogoUp(moneyMindPosition, -30); // Move MoneyMind up by 30 units
+    moveLogoUp(logoPosition, -60);   // Animation movement
+    moveLogoUp(moneyMindPosition, -60); // Animation movement
   }, []);
 
   return (
