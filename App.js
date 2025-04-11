@@ -1,34 +1,16 @@
-import React, { useEffect, useRef } from 'react';
-import { StyleSheet, View, Animated } from 'react-native';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { moveLogoUp, fadeInMoneyMind } from './Actions'; 
+import LoadingPage from './LoadingPage'; 
 
 export default function App() {
-  const logoPosition = useRef(new Animated.Value(0)).current; 
-  const moneyMindOpacity = useRef(new Animated.Value(0)).current; 
-
-  useEffect(() => {
-    moveLogoUp(logoPosition); 
-    fadeInMoneyMind(moneyMindOpacity); 
-  }, []);
-
   return (
     <LinearGradient
       colors={['#000000', '#171717', '#171717', '#232323', '#3b3b3b', '#4f4f4f']}
       style={styles.background}
     >
       <View style={styles.centeredContainer}>
-        {}
-        <Animated.Image 
-          source={require('./assets/logo.png')} 
-          style={[styles.logo, { transform: [{ translateY: logoPosition }] }]} 
-        />
-
-        {}
-        <Animated.Image 
-          source={require('./assets/MoneyMind.png')} 
-          style={[styles.moneyMind, { opacity: moneyMindOpacity }]} 
-        />
+        <LoadingPage /> {/* Render the loading screen */}
       </View>
     </LinearGradient>
   );
@@ -42,17 +24,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  logo: {
-    width: 350,
-    height: 350,
-    resizeMode: 'contain',
-    marginTop: -100,
-  },
-  moneyMind: {
-    width: 200, 
-    height: 100, 
-    resizeMode: 'contain',
-    marginTop: -100, 
   },
 });
