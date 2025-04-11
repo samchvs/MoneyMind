@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { StyleSheet, View, Animated } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { moveLogoUp, fadeInMoneyMind } from './Actions'; 
-//test
+
 export default function App() {
   const logoPosition = useRef(new Animated.Value(0)).current; 
   const moneyMindOpacity = useRef(new Animated.Value(0)).current; 
