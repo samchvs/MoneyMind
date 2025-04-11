@@ -44,8 +44,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    width: 450,
-    height: 450,
+    width: 350,
+    height: 350,
     resizeMode: 'contain',
     marginTop: -100,
   },
@@ -53,6 +53,6 @@ const styles = StyleSheet.create({
     width: 200, 
     height: 100, 
     resizeMode: 'contain',
-    marginTop: -170, 
+    marginTop: -100, 
   },
 });
