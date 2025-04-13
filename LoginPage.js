@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, TextInput, Text, Image, Animated, TouchableOpacity, Easing } from 'react-native';  
+import { StyleSheet, TextInput, Text, Image, Animated, TouchableOpacity } from 'react-native';  
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Dimensions } from 'react-native';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
-
- 
   const logoMoveUp = useRef(new Animated.Value(0)).current;       // start at initial position
   const moneyMindMoveUp = useRef(new Animated.Value(0)).current;  // start at initial position
   const inputOpacity = useRef(new Animated.Value(0)).current;     // hidden at start
@@ -14,38 +13,38 @@ export default function LoginPage() {
   const buttonMoveUp = useRef(new Animated.Value(100)).current;   // button starts below, will move up
 
   useEffect(() => {
-     Animated.parallel([
-      Animated.timing(logoMoveUp, {
-        toValue: -100, 
-        duration: 2000,  
-        easing: Easing.out(Easing.exp),  
+    Animated.parallel([
+      Animated.spring(logoMoveUp, {
+        toValue: -100,
+        friction: 10, // Adjusted for smoother animation
+        tension: 30, // Adjusted for responsiveness
         useNativeDriver: true,
       }),
-      Animated.timing(moneyMindMoveUp, {
-        toValue: -100, 
-        duration: 2000,  
-        easing: Easing.out(Easing.exp),  
+      Animated.spring(moneyMindMoveUp, {
+        toValue: -100,
+        friction: 10,
+        tension: 30,
         useNativeDriver: true,
       }),
     ]).start(() => {
       Animated.timing(inputOpacity, {
         toValue: 1,
-        duration: 600,
+        duration: 500,
         useNativeDriver: true,
       }).start(() => {
         Animated.parallel([
           Animated.timing(buttonOpacity, {
-            toValue: 1,  
-            duration: 600,
+            toValue: 1,
+            duration: 500,
             useNativeDriver: true,
           }),
-          Animated.timing(buttonMoveUp, {
-            toValue: 0,  
-            duration: 600,
-            easing: Easing.out(Easing.exp),
+          Animated.spring(buttonMoveUp, {
+            toValue: 0,
+            friction: 6,
+            tension: 50,
             useNativeDriver: true,
           }),
-        ]).start();  
+        ]).start();
       });
     });
   }, []);
@@ -95,7 +94,7 @@ export default function LoginPage() {
       {/* Button Container with Animated Opacity and Movement */}
       <Animated.View style={{ opacity: buttonOpacity, transform: [{ translateY: buttonMoveUp }] }}>
         <TouchableOpacity style={styles.buttonContainer} onPress={handleLogin} activeOpacity={0.8}>
-         <Text style={styles.buttonText}>Login</Text>
+          <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
       </Animated.View>
     </LinearGradient>
