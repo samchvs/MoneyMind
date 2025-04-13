@@ -16,14 +16,14 @@ export default function LoginPage() {
     Animated.parallel([
       Animated.spring(logoMoveUp, {
         toValue: -100,
-        friction: 10, // Adjusted for smoother animation
+        friction: 20, // Adjusted for smoother animation
         tension: 30, // Adjusted for responsiveness
         useNativeDriver: true,
       }),
       Animated.spring(moneyMindMoveUp, {
         toValue: -100,
         friction: 10,
-        tension: 30,
+        tension: 50,
         useNativeDriver: true,
       }),
     ]).start(() => {
