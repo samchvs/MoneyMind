@@ -2,22 +2,22 @@ import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, TextInput, Text, Image, Animated, TouchableOpacity } from 'react-native';  
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Dimensions } from 'react-native';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
-  const logoMoveUp = useRef(new Animated.Value(0)).current;       // start at initial position
-  const moneyMindMoveUp = useRef(new Animated.Value(0)).current;  // start at initial position
-  const inputOpacity = useRef(new Animated.Value(0)).current;     // hidden at start
-  const buttonOpacity = useRef(new Animated.Value(0)).current;    // button opacity, initially hidden
-  const buttonMoveUp = useRef(new Animated.Value(100)).current;   // button starts below, will move up
+  const [error, setError] = useState(''); 
+  const logoMoveUp = useRef(new Animated.Value(0)).current;      
+  const moneyMindMoveUp = useRef(new Animated.Value(0)).current;  
+  const inputOpacity = useRef(new Animated.Value(0)).current;     
+  const buttonOpacity = useRef(new Animated.Value(0)).current;   
+  const buttonMoveUp = useRef(new Animated.Value(100)).current;   
 
   useEffect(() => {
     Animated.parallel([
       Animated.spring(logoMoveUp, {
         toValue: -100,
-        friction: 20, // Adjusted for smoother animation
-        tension: 30, // Adjusted for responsiveness
+        friction: 20, 
+        tension: 30, 
         useNativeDriver: true,
       }),
       Animated.spring(moneyMindMoveUp, {
@@ -78,8 +78,11 @@ export default function LoginPage() {
           placeholderTextColor="#808080"
           value={username}
           onChangeText={(text) => {
-            if (text.length <= 15) {
-              setUsername(text);
+            if (text.length > 15) {
+              setError('Username cannot exceed 15 characters'); 
+            } else {
+              setError(''); 
+              setUsername(text); 
             }
           }}
         />
@@ -89,6 +92,8 @@ export default function LoginPage() {
           color={username ? '#00ff00' : 'transparent'}
           style={styles.icon}
         />
+        {/* Display error message */}
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
       </Animated.View>
 
       {/* Button Container with Animated Opacity and Movement */}
@@ -156,6 +161,13 @@ const styles = StyleSheet.create({
     right: 15,
     top: 17,
   },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    marginTop: 5,
+    fontWeight: 'bold',
+    marginLeft: 15,
+  },
   buttonContainer: {
     width: 250,
     height: 50,
@@ -163,7 +175,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 10,
     borderColor: '#fff',
     borderWidth: 1,
   },
