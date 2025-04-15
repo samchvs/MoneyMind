@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, TextInput, Text, Image, Animated, TouchableOpacity } from 'react-native';  
+import { StyleSheet, TextInput, Text, Image, Animated, TouchableOpacity, Vibration } from 'react-native';  
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -80,6 +80,7 @@ export default function LoginPage() {
           onChangeText={(text) => {
             if (text.length > 15) {
               setError('Username cannot exceed 15 characters'); 
+              Vibration.vibrate(); // Trigger vibration
             } else {
               setError(''); 
               setUsername(text); 
@@ -166,7 +167,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 5,
     fontWeight: 'bold',
-    marginLeft: 15,
+    textAlign: 'center',
   },
   buttonContainer: {
     width: 250,
