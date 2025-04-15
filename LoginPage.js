@@ -100,7 +100,7 @@ export default function LoginPage() {
       {/* Button Container with Animated Opacity and Movement */}
       <Animated.View style={{ opacity: buttonOpacity, transform: [{ translateY: buttonMoveUp }] }}>
         <TouchableOpacity style={styles.buttonContainer} onPress={handleLogin} activeOpacity={0.8}>
-          <Text style={styles.buttonText}>Login</Text>
+          <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
       </Animated.View>
     </LinearGradient>
