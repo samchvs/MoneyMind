@@ -80,7 +80,7 @@ export default function LoginPage() {
           onChangeText={(text) => {
             if (text.length > 15) {
               setError('Username cannot exceed 15 characters'); 
-              Vibration.vibrate(); // Trigger vibration
+              Vibration.vibrate(); 
             } else {
               setError(''); 
               setUsername(text); 
