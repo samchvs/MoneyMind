@@ -3,7 +3,7 @@ import { StyleSheet, TextInput, Text, Image, Animated, TouchableOpacity, Vibrati
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
-export default function LoginPage() {
+export default function LoginPage({ navigation }) {
   const [username, setUsername] = useState('');
   const [error, setError] = useState(''); 
   const logoMoveUp = useRef(new Animated.Value(0)).current;      
@@ -32,7 +32,7 @@ export default function LoginPage() {
         duration: 500,
         useNativeDriver: true,
       }).start(() => {
-        Animated.parallel([
+        Animated.parallel([ 
           Animated.timing(buttonOpacity, {
             toValue: 1,
             duration: 500,
@@ -50,7 +50,8 @@ export default function LoginPage() {
   }, []);
 
   const handleLogin = () => {
-    alert('Login Button Pressed');
+    // Navigate to the next page (replace 'NextPage' with your target screen name)
+    navigation.navigate('HomePage');
   };
 
   return (
@@ -93,7 +94,6 @@ export default function LoginPage() {
           color={username ? '#00ff00' : 'transparent'}
           style={styles.icon}
         />
-        {/* Display error message */}
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
       </Animated.View>
 
@@ -106,6 +106,7 @@ export default function LoginPage() {
     </LinearGradient>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -133,6 +134,7 @@ const styles = StyleSheet.create({
     width: '85%',
     position: 'relative',
     marginTop: -100,
+    marginLeft: 40,
   },
   floatingLabel: {
     position: 'absolute',
@@ -167,7 +169,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 5,
     fontWeight: 'bold',
-    textAlign: 'center',
+    marginLeft: 20,
   },
   buttonContainer: {
     width: 250,
