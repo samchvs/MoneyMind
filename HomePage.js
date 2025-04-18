@@ -10,7 +10,8 @@ export default function HomePage() {
     >
       <View style={styles.content}>
         <Text style={styles.title}>Welcome to HomePage!</Text>
-        {/* Add your components here */}
+        {
+        }
       </View>
     </LinearGradient>
   );
