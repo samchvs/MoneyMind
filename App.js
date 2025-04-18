@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import LoadingPage from './LoadingPage'; 
 import LoginPage from './LoginPage'; 
 import HomePage from './HomePage';
@@ -19,7 +19,7 @@ export default function App() {
   }, []);
 
   if (!showLogin) {
-     return (
+    return (
       <LinearGradient
         colors={['#000000', '#171717', '#171717', '#232323', '#3b3b3b', '#3b3b3b', '#4f4f4f']}
         style={styles.background}
@@ -28,21 +28,19 @@ export default function App() {
           <LoadingPage />
         </View>
       </LinearGradient>
-      
     );
   }
 
-   return (
+  return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {!showLogin ? (
-          <Stack.Screen name="LoadingPage" component={LoadingPage} />
-        ) : (
-          <>
-            <Stack.Screen name="LoginPage" component={LoginPage} />
-            <Stack.Screen name="HomePage" component={HomePage} />
-          </>
-        )}
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+          ...TransitionPresets.SlideFromRightIOS, 
+        }}
+      >
+        <Stack.Screen name="LoginPage" component={LoginPage} />
+        <Stack.Screen name="HomePage" component={HomePage} />
       </Stack.Navigator>
     </NavigationContainer>
   );
