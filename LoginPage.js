@@ -53,7 +53,7 @@ export default function LoginPage({ navigation }) {
     if (username.trim() === '') {
       setError('Please enter your username before proceeding.');
     } else {
-      setError(''); // Clear any previous error
+      setError(''); 
       navigation.navigate('HomePage');
     }
   };
