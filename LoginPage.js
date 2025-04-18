@@ -63,18 +63,23 @@ export default function LoginPage({ navigation }) {
       colors={['#000000', '#171717', '#171717', '#232323', '#3b3b3b', '#3b3b3b', '#4f4f4f']}
       style={styles.container}
     >
-      {/* Logo */}
+      {
+    }
       <Animated.View style={[styles.logoWrapper, { transform: [{ translateY: logoMoveUp }] }]}>
         <Image source={require('./assets/logo.png')} style={styles.logo} />
       </Animated.View>
 
-      {/* MoneyMind Image */}
+      {
+
+      }
       <Animated.Image
         source={require('./assets/MoneyMind.png')}
         style={[styles.moneyMind, { transform: [{ translateY: moneyMindMoveUp }] }]}
       />
 
-      {/* Input Field */}
+      {
+
+      }
       <Animated.View style={[styles.inputWrapper, { opacity: inputOpacity }]}>
         <Text style={styles.floatingLabel}>Username</Text>
         <TextInput
@@ -101,7 +106,7 @@ export default function LoginPage({ navigation }) {
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
       </Animated.View>
 
-      {/* Button Container with Animated Opacity and Movement */}
+      {}
       <Animated.View style={{ opacity: buttonOpacity, transform: [{ translateY: buttonMoveUp }] }}>
         <TouchableOpacity style={styles.buttonContainer} onPress={handleLogin} activeOpacity={0.8}>
           <Text style={styles.buttonText}>Continue</Text>
