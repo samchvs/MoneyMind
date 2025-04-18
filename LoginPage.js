@@ -50,8 +50,12 @@ export default function LoginPage({ navigation }) {
   }, []);
 
   const handleLogin = () => {
-    // Navigate to the next page (replace 'NextPage' with your target screen name)
-    navigation.navigate('HomePage');
+    if (username.trim() === '') {
+      setError('Please enter your username before proceeding.');
+    } else {
+      setError(''); // Clear any previous error
+      navigation.navigate('HomePage');
+    }
   };
 
   return (
@@ -106,7 +110,6 @@ export default function LoginPage({ navigation }) {
     </LinearGradient>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -169,7 +172,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 5,
     fontWeight: 'bold',
-    marginLeft: 20,
+    textAlign: 'center', 
+    flexWrap: 'wrap',
+    width: 250, 
   },
   buttonContainer: {
     width: 250,
