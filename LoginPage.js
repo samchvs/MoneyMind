@@ -52,6 +52,7 @@ export default function LoginPage({ navigation }) {
   const handleLogin = () => {
     if (username.trim() === '') {
       setError('Please enter your username before proceeding.');
+      Vibration.vibrate(); 
     } else {
       setError(''); 
       navigation.navigate('HomePage');
