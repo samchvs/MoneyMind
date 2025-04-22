@@ -55,7 +55,8 @@ export default function LoginPage({ navigation }) {
       Vibration.vibrate(); 
     } else {
       setError(''); 
-      navigation.navigate('HomePage');
+      console.log('Navigating with username:', username); //debugger in console but works sa app na
+      navigation.navigate('HomePage', { username });
     }
   };
 

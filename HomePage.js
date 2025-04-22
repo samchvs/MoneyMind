@@ -2,14 +2,15 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-export default function HomePage() {
+export default function HomePage({ route}) {
+  const username = route?.params?.username; // Get the username from the route params
   return (
     <LinearGradient
       colors={['#000000', '#171717', '#171717', '#232323', '#3b3b3b', '#3b3b3b', '#4f4f4f']}
       style={styles.container}
     >
       <View style={styles.content}>
-        <Text style={styles.title}>Welcome to HomePage!</Text>
+        <Text style={styles.title}>Welcome, {username}!</Text>
         {
         }
       </View>
