@@ -24,6 +24,9 @@ export default function HomePage({ route }) {
   const [selectedBox, setSelectedBox] = useState('');
   const [modalTitleColor, setModalTitleColor] = useState('#fff');
   const [inputValue, setInputValue] = useState('');
+  const [incomeValue, setIncomeValue] = useState('');
+  const [expenseValue, setExpenseValue] = useState('');
+  const [savingsValue, setSavingsValue] = useState('');
 
   const handlePress = (boxNumber) => {
     let jumpValue;
@@ -75,6 +78,13 @@ export default function HomePage({ route }) {
   const handleEnter = () => {
     // Perform action for entering the value 
     console.log('Entered value:', inputValue);
+    if (selectedBox === 'Income') {
+      setIncomeValue(inputValue);
+    } else if (selectedBox === 'Expense') {
+      setExpenseValue(inputValue);
+    } else if (selectedBox === 'Savings') {
+      setSavingsValue(inputValue);
+    }
     setModalVisible(false); // Close the modal
   };
 
@@ -96,27 +106,53 @@ export default function HomePage({ route }) {
           />
         </View>
 
-        <TouchableWithoutFeedback onPress={() => handlePress(1)}>
+        <TouchableWithoutFeedback onPress={() => {handlePress(1)
+          setSelectedBox('Income')
+          setInputValue(incomeValue)
+          setModalVisible(true);
+        }}>
           <Animated.View
             style={[styles.customBox, { transform: [{ translateY: jumpValue1 }] }]}
           >
             <Text style={styles.boxText}>Income</Text>
+            <Text style={styles.inputDisplay}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.5}>{incomeValue}</Text>
           </Animated.View>
         </TouchableWithoutFeedback>
 
-        <TouchableWithoutFeedback onPress={() => handlePress(2)}>
+        <TouchableWithoutFeedback onPress={() => {handlePress(2)
+          setSelectedBox('Expense')
+          setInputValue(expenseValue)
+          setModalVisible(true)
+        }}
+          >
           <Animated.View
             style={[styles.customBox2, { transform: [{ translateY: jumpValue2 }] }]}
           >
+            
             <Text style={styles.boxText2}>Expenses</Text>
+            <Text style={styles.inputDisplay}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.5}>{expenseValue}</Text>
           </Animated.View>
         </TouchableWithoutFeedback>
 
-        <TouchableWithoutFeedback onPress={() => handlePress(3)}>
+        <TouchableWithoutFeedback onPress={() => {handlePress(3)
+          setSelectedBox('Savings')
+          setInputValue(savingsValue)
+          setModalVisible(true)
+        }}>
           <Animated.View
             style={[styles.customBox3, { transform: [{ translateY: jumpValue3 }] }]}
           >
             <Text style={styles.boxText3}>Savings</Text>
+            <Text style={styles.inputDisplay}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.5}>{savingsValue}</Text>
           </Animated.View>
         </TouchableWithoutFeedback>
 
@@ -132,74 +168,59 @@ export default function HomePage({ route }) {
               <Text style={[styles.modalTitle, { color: modalTitleColor }]}>
                 {selectedBox}
               </Text>
+
               <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
                 <Text style={styles.closeButtonText}>X</Text>
               </TouchableOpacity>
 
               {/* Input display */}
               <Text style={styles.inputDisplay}>{inputValue}</Text>
+              <View style={styles.divider} />
+              {/* Keypad layout: 3x4 grid + 1x4 column */}
+              <View style={styles.calcGridContainer}>
+                {/* Number Grid */}
+                <View style={styles.numberGrid}>
+                  {['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'].map((num) => (
+                    <TouchableOpacity
+                      key={num}
+                      style={styles.calcButton}
+                      onPress={() => setInputValue(inputValue + num)}
+                    >
+                      <Text style={styles.calcButtonText}>{num}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
 
-              {/* Row 1 */}
-              <View style={styles.calcRow}>
-                {['1', '2', '3'].map((num) => (
+                {/* Action Column */}
+                <View style={styles.actionColumn}>
                   <TouchableOpacity
-                    key={num}
-                    style={styles.calcButton}
-                    onPress={() => setInputValue(inputValue + num)}
+                    style={[styles.calcButton, styles.deleteButton]}
+                    onPress={handleDelete}
                   >
-                    <Text style={styles.calcButtonText}>{num}</Text>
+                    <Text style={styles.calcButtonText}>Del</Text>
                   </TouchableOpacity>
-                ))}
-              </View>
 
-              {/* Row 2 */}
-              <View style={styles.calcRow}>
-                {['4', '5', '6'].map((num) => (
                   <TouchableOpacity
-                    key={num}
                     style={styles.calcButton}
-                    onPress={() => setInputValue(inputValue + num)}
+                    onPress={() => setInputValue(inputValue + ',')}
                   >
-                    <Text style={styles.calcButtonText}>{num}</Text>
+                    <Text style={styles.calcButtonText}>,</Text>
                   </TouchableOpacity>
-                ))}
-              </View>
 
-              {/* Row 3 */}
-              <View style={styles.calcRow}>
-                {['7', '8', '9'].map((num) => (
                   <TouchableOpacity
-                    key={num}
                     style={styles.calcButton}
-                    onPress={() => setInputValue(inputValue + num)}
+                    onPress={() => setInputValue(inputValue + '.')}
                   >
-                    <Text style={styles.calcButtonText}>{num}</Text>
+                    <Text style={styles.calcButtonText}>.</Text>
                   </TouchableOpacity>
-                ))}
-              </View>
 
-              {/* Row 4 (Delete, 0, Enter) */}
-              <View style={styles.calcRow}>
-                <TouchableOpacity
-                  style={[styles.calcButton, styles.deleteButton]}
-                  onPress={handleDelete}
-                >
-                  <Text style={styles.calcButtonText}>Del</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[styles.calcButton, styles.zeroButton]} 
-                  onPress={() => setInputValue(inputValue + '0')}
-                >
-                  <Text style={styles.calcButtonText}>0</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[styles.calcButton, styles.enterButton]}
-                  onPress={handleEnter}
-                >
-                  <Text style={styles.calcButtonText}>Enter</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.calcButton, styles.enterButton]}
+                    onPress={handleEnter}
+                  >
+                    <Text style={styles.calcButtonText}>Enter</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </View>
@@ -261,7 +282,7 @@ const styles = StyleSheet.create({
     color: '#3F6FFF',
     fontSize: 14,
     fontWeight: 'bold',
-    top: -20,
+    top: -12,
   },
   customBox2: {
     position: 'absolute',
@@ -278,7 +299,7 @@ const styles = StyleSheet.create({
     color: '#FF3434',
     fontSize: 14,
     fontWeight: 'bold',
-    top: -20,
+    top: -12,
   },
   customBox3: {
     position: 'absolute',
@@ -295,7 +316,7 @@ const styles = StyleSheet.create({
     color: '#5BFF66',
     fontSize: 14,
     fontWeight: 'bold',
-    top: -20,
+    top: -12,
   },
   modalContainer: {
     flex: 1,
@@ -335,41 +356,58 @@ const styles = StyleSheet.create({
   inputDisplay: {
     fontSize: 24,
     color: '#fff',
-    marginBottom: 20,
-    alignSelf: 'flex-start',
-    marginLeft: 5,
+    marginBottom: 0,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    alignSelf: 'center',
+    marginHorizontal: 5,
   },
-  calcRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    marginBottom: 15,
+  divider: {
+    height: 1,
+    backgroundColor: '#aaa',
+    marginVertical: 5,
     width: '100%',
   },
+  calcGridContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 60,
+  },
+  
+  numberGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: 210, // Adjust based on button size
+    justifyContent: 'center',
+  },
+  
+  actionColumn: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    marginLeft: 10,
+  },
+  
   calcButton: {
-    backgroundColor: '#fff',
     width: 60,
     height: 60,
+    margin: 4,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#ddd',
     borderRadius: 10,
-    marginHorizontal: 5,
   },
+  
   calcButtonText: {
     fontSize: 20,
-    color: '#000',
     fontWeight: 'bold',
   },
-  zeroButton: {
-    width: 60, 
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 5,
-  },
+  
   deleteButton: {
-    backgroundColor: '#FF3434',
+    backgroundColor: '#f88',
   },
+  
   enterButton: {
-    backgroundColor: '#5BFF66',
+    backgroundColor: '#8f8',
   },
 });
