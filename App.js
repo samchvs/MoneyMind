@@ -22,7 +22,7 @@ export default function App() {
         duration: 500,
         useNativeDriver: true,
       }).start(() => {
-        setShowLogin(true); // After the fade-out, show the login page
+        setShowLogin(true); 
       });
     }, 1000);
   }, []);
@@ -30,8 +30,8 @@ export default function App() {
   return (
     <SQLiteProvider databaseName="db.db">
       {!showLogin ? (
-        <LinearGradient colors={['#000000', '#171717', '#232323']} style={styles.container}>
-          <Animated.View style={[styles.fullscreen, { opacity: loadingOpacity, position: 'absolute' }]}>
+        <LinearGradient colors={['#000000', '#171717', '#232323']} style={styles.gradientContainer}>
+          <Animated.View style={[styles.fullscreen, { opacity: loadingOpacity }]}>
             <LoadingPage />
           </Animated.View>
         </LinearGradient>
@@ -55,12 +55,12 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  gradientContainer: {
+    flex: 1, 
   },
   fullscreen: {
     flex: 1,
-    width: '100%',
-    height: '100%',
+    justifyContent: 'center', 
+    alignItems: 'center', 
   },
 });

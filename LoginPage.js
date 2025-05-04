@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
   numberGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    width: 180, // Adjust based on button size
+    width: 180, 
     justifyContent: 'center',
   },
   
