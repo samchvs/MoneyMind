@@ -15,11 +15,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 export default function HomePage({ route }) {
   const username = route?.params?.username;
-
   const [jumpValue1] = useState(new Animated.Value(0));
   const [jumpValue2] = useState(new Animated.Value(0));
   const [jumpValue3] = useState(new Animated.Value(0));
-
+  const [footerIconJump] = useState(new Animated.Value(0));
+  const [footerIcon2Jump] = useState(new Animated.Value(0));
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedBox, setSelectedBox] = useState('');
   const [modalTitleColor, setModalTitleColor] = useState('#fff');
@@ -27,6 +27,7 @@ export default function HomePage({ route }) {
   const [incomeValue, setIncomeValue] = useState('');
   const [expenseValue, setExpenseValue] = useState('');
   const [savingsValue, setSavingsValue] = useState('');
+  
 
   const handlePress = (boxNumber) => {
     let jumpValue;
@@ -49,6 +50,7 @@ export default function HomePage({ route }) {
       default:
         return;
     }
+    
 
     Animated.sequence([
       Animated.timing(jumpValue, {
@@ -66,6 +68,7 @@ export default function HomePage({ route }) {
     setInputValue('');
     setModalVisible(true);
   };
+  
 
   const closeModal = () => {
     setModalVisible(false);
@@ -87,6 +90,20 @@ export default function HomePage({ route }) {
     }
     setModalVisible(false); // Close the modal
   };
+  const handleFooterIconPress = () => {
+    Animated.sequence([
+      Animated.timing(footerIconJump, {
+        toValue: -10,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(footerIconJump, {
+        toValue: 0,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
 
   return (
     <LinearGradient
@@ -104,6 +121,51 @@ export default function HomePage({ route }) {
             source={require('./assets/settings_icon.png')}
             style={styles.icon}
           />
+        </View>
+
+        <View style={styles.footer}>
+          {/* List Icon */}
+          <TouchableWithoutFeedback onPress={handleFooterIconPress}>
+           <Animated.View style={{ alignItems: 'center', marginHorizontal: 20 }}>
+            <Animated.Image
+              source={require('./assets/list.png')}
+              style={[
+                styles.footerIcon,
+                { transform: [{ translateY: footerIconJump }] },
+              ]}
+            />
+            <Text style={styles.footerIconText}>List</Text>
+          </Animated.View>
+        </TouchableWithoutFeedback>
+          
+          {/* Savings Icon */}
+          <TouchableWithoutFeedback 
+            onPress={() => {
+              Animated.sequence([
+                Animated.timing(footerIcon2Jump, {
+                  toValue: -10,
+                  duration: 100,
+                  useNativeDriver: true,
+      }),
+        Animated.timing(footerIcon2Jump, {
+        toValue: 0,
+        duration: 100,
+        useNativeDriver: true,
+            }),
+          ]).start();
+        }}
+      >
+      <Animated.View style={{ alignItems: 'center' }}>
+        <Animated.Image
+          source={require('./assets/savingsIcon.png')}
+          style={[
+            styles.footerIcon2, 
+            { transform: [{ translateY: footerIcon2Jump }] },
+          ]}
+        />
+        <Text style={styles.footerIcon2Text}>Save</Text>
+      </Animated.View>
+    </TouchableWithoutFeedback>
         </View>
 
         <TouchableWithoutFeedback onPress={() => {handlePress(1)
@@ -404,10 +466,54 @@ const styles = StyleSheet.create({
   },
   
   deleteButton: {
-    backgroundColor: '#FF3434',
+    backgroundColor: '#f88',
   },
   
   enterButton: {
     backgroundColor: '#8f8',
   },
+  footer: {
+    position: 'absolute',
+    width: 393,
+    height: 100,
+    left: -3,
+    top: 740,
+    backgroundColor: '#2E2E2E',
+    borderRadius: 40,
+  },
+  footerIcon: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    left: 20,
+    top: 15, 
+  },
+  footerIconText: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    left: 33,
+    top: 52, 
+    fontSize: 12,
+    color: '#aaaaaa',
+    fontWeight: 'bold',
+  },
+  footerIcon2: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    left: 120, 
+    top: 12,   
+  },
+  footerIcon2Text: {
+    position: 'absolute',
+    width: 60,
+    height: 40,
+    left: 125, 
+    top: 52,   
+    fontSize: 12,
+    color: '#aaaaaa',
+    fontWeight: 'bold',
+  },
+
 });
