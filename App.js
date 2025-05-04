@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, StyleSheet, Animated } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
-import LoadingPage from './LoadingPage'; 
-import LoginPage from './LoginPage'; 
+import { LinearGradient } from 'expo-linear-gradient';
+import LoadingPage from './LoadingPage';
+import LoginPage from './LoginPage';
 import HomePage from './HomePage';
 import RegisterPage from './RegisterPage';
 import { SQLiteProvider } from 'expo-sqlite';
@@ -13,51 +13,54 @@ const Stack = createStackNavigator();
 
 export default function App() {
   const [showLogin, setShowLogin] = useState(false);
+  const loadingOpacity = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     setTimeout(() => {
-      setShowLogin(true);
-    }, 1000); 
+      Animated.timing(loadingOpacity, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }).start(() => {
+        setShowLogin(true); // After the fade-out, show the login page
+      });
+    }, 1000);
   }, []);
 
-  if (!showLogin) {
-    return (
-      <LinearGradient
-        colors={['#000000', '#171717', '#171717', '#232323', '#3b3b3b', '#3b3b3b', '#4f4f4f']}
-        style={styles.background}
-      >
-        <View style={styles.centeredContainer}>
-          <LoadingPage />
-        </View>
-      </LinearGradient>
-    );
-  }
-
   return (
-    <SQLiteProvider databaseName='db.db'>
-    <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-          ...TransitionPresets.SlideFromRightIOS, 
-        }}
-      >
-        <Stack.Screen name="LoginPage" component={LoginPage} />
-        <Stack.Screen name="RegisterPage" component={RegisterPage} />
-        <Stack.Screen name="HomePage" component={HomePage} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <SQLiteProvider databaseName="db.db">
+      {!showLogin ? (
+        <LinearGradient colors={['#000000', '#171717', '#232323']} style={styles.container}>
+          <Animated.View style={[styles.fullscreen, { opacity: loadingOpacity, position: 'absolute' }]}>
+            <LoadingPage />
+          </Animated.View>
+        </LinearGradient>
+      ) : (
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+              cardStyle: { backgroundColor: '#000000' },
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          >
+            <Stack.Screen name="LoginPage" component={LoginPage} />
+            <Stack.Screen name="RegisterPage" component={RegisterPage} />
+            <Stack.Screen name="HomePage" component={HomePage} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      )}
     </SQLiteProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  background: {
+  container: {
     flex: 1,
   },
-  centeredContainer: {
+  fullscreen: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: '100%',
+    height: '100%',
   },
 });
