@@ -10,6 +10,7 @@ import {
   TouchableWithoutFeedback,
   Modal,
   TouchableOpacity,
+  
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -30,6 +31,7 @@ export default function HomePage({ route }) {
   const [incomeValue, setIncomeValue] = useState('');
   const [expenseValue, setExpenseValue] = useState('');
   const [savingsValue, setSavingsValue] = useState('');
+  
   
 
   const handlePress = (boxNumber) => {
