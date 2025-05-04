@@ -55,39 +55,42 @@ export default function LoginPage({ navigation }) {
   const db = useSQLiteContext();
 
   const handleLogin = async () => {
-  if (!username || !password || username.trim() === '' || password.trim() === '') {
-    setError('Please enter both username and password.');
-    Vibration.vibrate(); 
-  return;
-}
-
-  try {
-    const existingUser = await db.getFirstAsync(
-      'SELECT * FROM users WHERE username = ?',
-      [username]
-    );
-
-    if (!existingUser){
-      Alert.alert('Error', 'Username does not exist');
+    if (!username || !password || username.trim() === '' || password.trim() === '') {
+      setError('Please enter both username and password.');
+      Vibration.vibrate(); 
       return;
     }
-
-    const validUser = await db.getFirstAsync('SELECT * FROM users WHERE username = ? and password = ?', 
-      [username, password]
-    );
-
-    if(validUser){
-      Alert.alert('Success', 'Login Successful');
-      console.log('Navigating with username:', username);
-      navigation.navigate('HomePage', { username: username });
-    } else {
-      Alert.alert('Error', 'Invalid Password');
-      return;
+  
+    try {
+      const existingUser = await db.getFirstAsync(
+        'SELECT * FROM users WHERE username = ?',
+        [username]
+      );
+  
+      if (!existingUser) {
+        setError('Username does not exist');
+        Vibration.vibrate(); // Vibrate to alert the user
+        return;
+      }
+  
+      const validUser = await db.getFirstAsync('SELECT * FROM users WHERE username = ? and password = ?', 
+        [username, password]
+      );
+  
+      if (validUser) {
+        // Removed the success alert here
+        console.log('Navigating with username:', username);
+        navigation.navigate('HomePage', { username: username });
+      } else {
+        setError('Invalid Password');
+        Vibration.vibrate(); // Vibrate to alert the user
+        return;
+      }
+    } catch (error) {
+      console.log('Error during login: ', error);
     }
-  } catch (error) {
-    console.log('Error during login: ', error);
-  }
-};
+  };
+  
 
   return (
     <LinearGradient
