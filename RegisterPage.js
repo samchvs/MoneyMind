@@ -79,6 +79,12 @@ export default function RegisterPage({ navigation }) {
       return;
     }
 
+    if (username.length > 15) {
+      setError('Username cannot exceed 15 characters.');
+      Vibration.vibrate();
+      return;
+    }
+
     if (password !== confirmPassword) {
       Alert.alert('Error', 'Passwords do not match.');
       return;
@@ -127,7 +133,15 @@ export default function RegisterPage({ navigation }) {
           placeholder="Enter Username"
           placeholderTextColor="#808080"
           value={username}
-          onChangeText={setUsername}
+          onChangeText={(text) => {
+            if (text.length > 15) {
+              setError('Username cannot exceed 15 characters.');
+              Vibration.vibrate();
+              return; 
+            }
+            setUsername(text); 
+            setError(''); 
+          }}
         />
         <TextInput
           style={styles.input}
@@ -217,8 +231,8 @@ const styles = StyleSheet.create({
   },
   icon: {
     position: 'absolute',
-    right: 35,
-    top: 9,
+    right: 15,
+    top: 17,
   },
   errorText: {
     color: 'red',
