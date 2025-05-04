@@ -20,6 +20,9 @@ export default function HomePage({ route }) {
   const [jumpValue3] = useState(new Animated.Value(0));
   const [footerIconJump] = useState(new Animated.Value(0));
   const [footerIcon2Jump] = useState(new Animated.Value(0));
+  const [footerIcon3Jump] = useState(new Animated.Value(0));
+  const [footerIcon4Jump] = useState(new Animated.Value(0));
+  const [footerIcon5Jump] = useState(new Animated.Value(0));
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedBox, setSelectedBox] = useState('');
   const [modalTitleColor, setModalTitleColor] = useState('#fff');
@@ -51,7 +54,6 @@ export default function HomePage({ route }) {
         return;
     }
     
-
     Animated.sequence([
       Animated.timing(jumpValue, {
         toValue: -10,
@@ -98,6 +100,51 @@ export default function HomePage({ route }) {
         useNativeDriver: true,
       }),
       Animated.timing(footerIconJump, {
+        toValue: 0,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const handleFooterIcon3Press = () => {
+    Animated.sequence([
+      Animated.timing(footerIcon3Jump, {
+        toValue: -10,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(footerIcon3Jump, {
+        toValue: 0,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const handleFooterIcon4Press = () => {
+    Animated.sequence([
+      Animated.timing(footerIcon4Jump, {
+        toValue: -10,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(footerIcon4Jump, {
+        toValue: 0,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const handleFooterIcon5Press = () => {
+    Animated.sequence([
+      Animated.timing(footerIcon5Jump, {
+        toValue: -10,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(footerIcon5Jump, {
         toValue: 0,
         duration: 100,
         useNativeDriver: true,
@@ -163,9 +210,50 @@ export default function HomePage({ route }) {
             { transform: [{ translateY: footerIcon2Jump }] },
           ]}
         />
-        <Text style={styles.footerIcon2Text}>Save</Text>
+        <Text style={styles.footerIcon2Text}>Savings</Text>
       </Animated.View>
     </TouchableWithoutFeedback>
+
+     {/*Plus Icon (footerIcon3) */}
+     <TouchableWithoutFeedback onPress={handleFooterIcon3Press}>
+          <Animated.View style={{ alignItems: 'center' }}>
+            <Animated.Image
+              source={require('./assets/plusIcon.png')} // Make sure the image is in the assets folder
+              style={[
+                styles.footerIcon3,
+                { transform: [{ translateY: footerIcon3Jump }] },
+              ]}
+            />
+          </Animated.View>
+        </TouchableWithoutFeedback>
+
+       {/* Wallet Icon (footerIcon4) */}
+       <TouchableWithoutFeedback onPress={handleFooterIcon4Press}>
+          <Animated.View style={{ alignItems: 'center' }}>
+            <Animated.Image
+              source={require('./assets/walletIcon.png')} // Make sure the image is in the assets folder
+              style={[
+                styles.footerIcon4,
+                { transform: [{ translateY: footerIcon4Jump }] },
+              ]}
+            />
+            <Text style={styles.footerIcon4Text}>Wallet</Text>
+          </Animated.View>
+        </TouchableWithoutFeedback>
+
+       {/* New AI Icon (footerIcon5) */}
+       <TouchableWithoutFeedback onPress={handleFooterIcon5Press}>
+          <Animated.View style={{ alignItems: 'center' }}>
+            <Animated.Image
+              source={require('./assets/AiIcon.png')} // Make sure the image is in the assets folder
+              style={[
+                styles.footerIcon5,
+                { transform: [{ translateY: footerIcon5Jump }] },
+              ]}
+            />
+            <Text style={styles.footerIcon5Text}>AI</Text>
+          </Animated.View>
+        </TouchableWithoutFeedback>
         </View>
 
         <TouchableWithoutFeedback onPress={() => {handlePress(1)
@@ -502,18 +590,63 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 40,
     height: 40,
-    left: 120, 
+    left: 110, 
     top: 12,   
   },
   footerIcon2Text: {
     position: 'absolute',
     width: 60,
     height: 40,
-    left: 125, 
+    left: 108, 
     top: 52,   
     fontSize: 12,
     color: '#aaaaaa',
     fontWeight: 'bold',
   },
+  footerIcon3: {
+    position: 'absolute',
+    width: 70,
+    height: 70,
+    left: 165, 
+    top: -25,   
+  },
+
+  footerIcon4: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    left: 250, 
+    top: 15,   
+  },
+  footerIcon4Text: {
+    position: 'absolute',
+    width: 60,
+    height: 40,
+    left: 253, 
+    top: 52,   
+    fontSize: 12,
+    color: '#aaaaaa',
+    fontWeight: 'bold',
+  },
+
+  footerIcon5: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    left: 310,
+    top: 15,   
+  },
+  footerIcon5Text: {
+    position: 'absolute',
+    width: 60,
+    height: 40,
+    left: 325, 
+    top: 52,   
+    fontSize: 12,
+    color: '#aaaaaa',
+    fontWeight: 'bold',
+  },
+
+  
 
 });
