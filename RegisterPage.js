@@ -217,8 +217,8 @@ const styles = StyleSheet.create({
   },
   icon: {
     position: 'absolute',
-    right: 15,
-    top: 17,
+    right: 35,
+    top: 9,
   },
   errorText: {
     color: 'red',

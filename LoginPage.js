@@ -143,7 +143,7 @@ export default function LoginPage({ navigation }) {
         </TouchableOpacity>
         <Pressable style = {styles.link} onPress = {() => navigation.navigate('RegisterPage')}>
         <Text style={styles.linkText}>
-          Don't have an account? <Text style={styles.underline}>Register.</Text>.
+          Don't have an account? <Text style={styles.underline}>Register.</Text>
         </Text>
         </Pressable>
       </Animated.View>
@@ -201,8 +201,8 @@ const styles = StyleSheet.create({
   },
   icon: {
     position: 'absolute',
-    right: 15,
-    top: 17,
+    right: 35,
+    top: 9,
   },
   errorText: {
     color: 'red',
