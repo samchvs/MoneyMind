@@ -6,6 +6,7 @@ import { createStackNavigator, TransitionPresets } from '@react-navigation/stack
 import LoadingPage from './LoadingPage'; 
 import LoginPage from './LoginPage'; 
 import HomePage from './HomePage';
+import RegisterPage from './RegisterPage';
 import { SQLiteProvider } from 'expo-sqlite';
 
 const Stack = createStackNavigator();
@@ -42,6 +43,7 @@ export default function App() {
         }}
       >
         <Stack.Screen name="LoginPage" component={LoginPage} />
+        <Stack.Screen name="RegisterPage" component={RegisterPage} />
         <Stack.Screen name="HomePage" component={HomePage} />
       </Stack.Navigator>
     </NavigationContainer>

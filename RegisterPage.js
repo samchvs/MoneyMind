@@ -1,26 +1,46 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, TextInput, Text, Image, Animated, TouchableOpacity, Vibration, Alert, Pressable } from 'react-native';  
+import { StyleSheet, TextInput, Text, Image, Animated, TouchableOpacity, Vibration, Alert, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { SQLiteProvider, useSQLiteContext } from 'expo-sqlite';
+import { useSQLiteContext } from 'expo-sqlite';
 
+export default function RegisterPage({ navigation }) {
+  const db = useSQLiteContext();
 
-export default function LoginPage({ navigation }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(''); 
-  const logoMoveUp = useRef(new Animated.Value(0)).current;      
-  const moneyMindMoveUp = useRef(new Animated.Value(0)).current;  
-  const inputOpacity = useRef(new Animated.Value(0)).current;     
-  const buttonOpacity = useRef(new Animated.Value(0)).current;   
-  const buttonMoveUp = useRef(new Animated.Value(100)).current;   
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const logoMoveUp = useRef(new Animated.Value(0)).current;
+  const moneyMindMoveUp = useRef(new Animated.Value(0)).current;
+  const inputOpacity = useRef(new Animated.Value(0)).current;
+  const buttonOpacity = useRef(new Animated.Value(0)).current;
+  const buttonMoveUp = useRef(new Animated.Value(100)).current;
+
+  const InitializeDatabase = async (db) => {
+    try {
+      await db.execAsync(`
+        DROP TABLE IF EXISTS users;
+        CREATE TABLE IF NOT EXISTS users (
+          user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+          username TEXT NOT NULL UNIQUE,
+          password TEXT NOT NULL
+        );
+      `);
+      console.log('Users table reset successfully');
+    } catch (error) {
+      console.error('Failed to reset users table:', error);
+    }
+  };
+
 
   useEffect(() => {
     Animated.parallel([
       Animated.spring(logoMoveUp, {
         toValue: -100,
-        friction: 20, 
-        tension: 30, 
+        friction: 20,
+        tension: 30,
         useNativeDriver: true,
       }),
       Animated.spring(moneyMindMoveUp, {
@@ -35,7 +55,7 @@ export default function LoginPage({ navigation }) {
         duration: 500,
         useNativeDriver: true,
       }).start(() => {
-        Animated.parallel([ 
+        Animated.parallel([
           Animated.timing(buttonOpacity, {
             toValue: 1,
             duration: 500,
@@ -52,65 +72,55 @@ export default function LoginPage({ navigation }) {
     });
   }, []);
 
-  const db = useSQLiteContext();
-
-  const handleLogin = async () => {
-  if (!username || !password || username.trim() === '' || password.trim() === '') {
-    setError('Please enter both username and password.');
-    Vibration.vibrate(); 
-  return;
-}
-
-  try {
-    const existingUser = await db.getFirstAsync(
-      'SELECT * FROM users WHERE username = ?',
-      [username]
-    );
-
-    if (!existingUser){
-      Alert.alert('Error', 'Username does not exist');
+  const handleRegister = async () => {
+    if (username.length === 0 || password.length === 0 || confirmPassword.length === 0) {
+      setError('Please enter all fields.');
+      Vibration.vibrate();
       return;
     }
 
-    const validUser = await db.getFirstAsync('SELECT * FROM users WHERE username = ? and password = ?', 
-      [username, password]
-    );
-
-    if(validUser){
-      Alert.alert('Success', 'Login Successful');
-      console.log('Navigating with username:', username);
-      navigation.navigate('HomePage', { username: username });
-    } else {
-      Alert.alert('Error', 'Invalid Password');
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match.');
       return;
     }
-  } catch (error) {
-    console.log('Error during login: ', error);
-  }
-};
+
+    try {
+      const existingUser = await db.getFirstAsync(
+        'SELECT * FROM users WHERE username = ?',
+        [username]
+      );
+
+      if (existingUser) {
+        Alert.alert('Username already exists.');
+        return;
+      }
+
+      await db.runAsync(
+        'INSERT INTO users (username, password) VALUES (?, ?)',
+        [username, password]
+      );
+      Alert.alert('Registration Successful!');
+      navigation.navigate('HomePage', { username });
+
+    } catch (error) {
+      console.log('Error during registration:', error);
+    }
+  };
 
   return (
     <LinearGradient
       colors={['#000000', '#171717', '#171717', '#232323', '#3b3b3b', '#3b3b3b', '#4f4f4f']}
       style={styles.container}
     >
-      {
-    }
       <Animated.View style={[styles.logoWrapper, { transform: [{ translateY: logoMoveUp }] }]}>
         <Image source={require('./assets/logo.png')} style={styles.logo} />
       </Animated.View>
 
-      {
-
-      }
       <Animated.Image
         source={require('./assets/MoneyMind.png')}
         style={[styles.moneyMind, { transform: [{ translateY: moneyMindMoveUp }] }]}
       />
 
-      {
-
-      }
       <Animated.View style={[styles.inputWrapper, { opacity: inputOpacity }]}>
         <TextInput
           style={styles.input}
@@ -127,6 +137,14 @@ export default function LoginPage({ navigation }) {
           secureTextEntry
           onChangeText={setPassword}
         />
+        <TextInput
+          style={styles.input}
+          placeholder="Confirm Password"
+          placeholderTextColor="#808080"
+          value={confirmPassword}
+          secureTextEntry
+          onChangeText={setConfirmPassword}
+        />
         <Ionicons
           name="checkmark-circle"
           size={20}
@@ -136,17 +154,15 @@ export default function LoginPage({ navigation }) {
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
       </Animated.View>
 
-      {}
       <Animated.View style={{ opacity: buttonOpacity, transform: [{ translateY: buttonMoveUp }] }}>
-        <TouchableOpacity style={styles.buttonContainer} onPress={handleLogin} activeOpacity={0.8}>
-          <Text style={styles.buttonText}>Log In</Text>
+        <TouchableOpacity style={styles.buttonContainer} onPress={handleRegister} activeOpacity={0.8}>
+          <Text style={styles.buttonText}>Register</Text>
         </TouchableOpacity>
-        <Pressable style = {styles.link} onPress = {() => navigation.navigate('RegisterPage')}>
-          <Text style={styles.linkText}>Don't have an account? Register.</Text> 
+        <Pressable style={styles.link} onPress={() => navigation.navigate('LoginPage')}>
+          <Text style={styles.linkText}>Already have an account? Login.</Text>
         </Pressable>
       </Animated.View>
     </LinearGradient>
-  
   );
 }
 
