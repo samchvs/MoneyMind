@@ -139,11 +139,11 @@ export default function LoginPage({ navigation }) {
       {}
       <Animated.View style={{ opacity: buttonOpacity, transform: [{ translateY: buttonMoveUp }] }}>
         <TouchableOpacity style={styles.buttonContainer} onPress={handleLogin} activeOpacity={0.8}>
-          <Text style={styles.buttonText}>Log In</Text>
+          <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
         <Pressable style = {styles.link} onPress = {() => navigation.navigate('RegisterPage')}>
         <Text style={styles.linkText}>
-          Don't have an account? <Text style={styles.underline}>Register.</Text>.
+          Don't have an account? <Text style={styles.underline}>Register</Text>
         </Text>
         </Pressable>
       </Animated.View>
