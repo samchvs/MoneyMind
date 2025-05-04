@@ -142,7 +142,9 @@ export default function LoginPage({ navigation }) {
           <Text style={styles.buttonText}>Log In</Text>
         </TouchableOpacity>
         <Pressable style = {styles.link} onPress = {() => navigation.navigate('RegisterPage')}>
-          <Text style={styles.linkText}>Don't have an account? Register.</Text> 
+        <Text style={styles.linkText}>
+          Don't have an account? <Text style={styles.underline}>Register.</Text>.
+        </Text>
         </Pressable>
       </Animated.View>
     </LinearGradient>
@@ -205,11 +207,13 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     fontSize: 12,
-    marginTop: 5,
+    marginTop: -10,
     fontWeight: 'bold',
     textAlign: 'center', 
     flexWrap: 'wrap',
     width: 250, 
+    left: 20,
+    marginBottom: 10,
   },
   buttonContainer: {
     width: 250,
@@ -233,6 +237,10 @@ const styles = StyleSheet.create({
   linkText: {
     color: '#fff',
     textAlign: 'center',
+  },
+  underline: {
+    textDecorationLine: 'underline',
+    color: '#fff', 
   },
   calcGridContainer: {
     flexDirection: 'row',

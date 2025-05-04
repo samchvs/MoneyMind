@@ -159,7 +159,9 @@ export default function RegisterPage({ navigation }) {
           <Text style={styles.buttonText}>Register</Text>
         </TouchableOpacity>
         <Pressable style={styles.link} onPress={() => navigation.navigate('LoginPage')}>
-          <Text style={styles.linkText}>Already have an account? Login.</Text>
+        <Text style={styles.linkText}>
+          Already have an account? <Text style={styles.underline}>Login</Text>.
+        </Text>
         </Pressable>
       </Animated.View>
     </LinearGradient>
@@ -221,11 +223,13 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     fontSize: 12,
-    marginTop: 5,
+    marginTop: -15,
     fontWeight: 'bold',
     textAlign: 'center', 
     flexWrap: 'wrap',
     width: 250, 
+    left: 20,
+    marginBottom: 10,
   },
   buttonContainer: {
     width: 250,
@@ -249,5 +253,9 @@ const styles = StyleSheet.create({
   linkText: {
     color: '#fff',
     textAlign: 'center',
+  },
+  underline: {
+    textDecorationLine: 'underline',
+    color: '#fff', 
   },
 });
