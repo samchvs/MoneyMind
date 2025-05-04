@@ -10,20 +10,29 @@ import {
   TouchableWithoutFeedback,
   Modal,
   TouchableOpacity,
+  
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function HomePage({ route }) {
   const username = route?.params?.username;
-
   const [jumpValue1] = useState(new Animated.Value(0));
   const [jumpValue2] = useState(new Animated.Value(0));
   const [jumpValue3] = useState(new Animated.Value(0));
-
+  const [footerIconJump] = useState(new Animated.Value(0));
+  const [footerIcon2Jump] = useState(new Animated.Value(0));
+  const [footerIcon3Jump] = useState(new Animated.Value(0));
+  const [footerIcon4Jump] = useState(new Animated.Value(0));
+  const [footerIcon5Jump] = useState(new Animated.Value(0));
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedBox, setSelectedBox] = useState('');
   const [modalTitleColor, setModalTitleColor] = useState('#fff');
   const [inputValue, setInputValue] = useState('');
+  const [incomeValue, setIncomeValue] = useState('');
+  const [expenseValue, setExpenseValue] = useState('');
+  const [savingsValue, setSavingsValue] = useState('');
+  
+  
 
   const handlePress = (boxNumber) => {
     let jumpValue;
@@ -46,7 +55,7 @@ export default function HomePage({ route }) {
       default:
         return;
     }
-
+    
     Animated.sequence([
       Animated.timing(jumpValue, {
         toValue: -10,
@@ -63,6 +72,7 @@ export default function HomePage({ route }) {
     setInputValue('');
     setModalVisible(true);
   };
+  
 
   const closeModal = () => {
     setModalVisible(false);
@@ -75,7 +85,73 @@ export default function HomePage({ route }) {
   const handleEnter = () => {
     // Perform action for entering the value 
     console.log('Entered value:', inputValue);
+    if (selectedBox === 'Income') {
+      setIncomeValue(inputValue);
+    } else if (selectedBox === 'Expense') {
+      setExpenseValue(inputValue);
+    } else if (selectedBox === 'Savings') {
+      setSavingsValue(inputValue);
+    }
     setModalVisible(false); // Close the modal
+  };
+  const handleFooterIconPress = () => {
+    Animated.sequence([
+      Animated.timing(footerIconJump, {
+        toValue: -10,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(footerIconJump, {
+        toValue: 0,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const handleFooterIcon3Press = () => {
+    Animated.sequence([
+      Animated.timing(footerIcon3Jump, {
+        toValue: -10,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(footerIcon3Jump, {
+        toValue: 0,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const handleFooterIcon4Press = () => {
+    Animated.sequence([
+      Animated.timing(footerIcon4Jump, {
+        toValue: -10,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(footerIcon4Jump, {
+        toValue: 0,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const handleFooterIcon5Press = () => {
+    Animated.sequence([
+      Animated.timing(footerIcon5Jump, {
+        toValue: -10,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(footerIcon5Jump, {
+        toValue: 0,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
   };
 
   return (
@@ -96,27 +172,139 @@ export default function HomePage({ route }) {
           />
         </View>
 
-        <TouchableWithoutFeedback onPress={() => handlePress(1)}>
+        <View style={styles.footer}>
+          {/* List Icon */}
+          <TouchableWithoutFeedback onPress={handleFooterIconPress}>
+           <Animated.View style={{ alignItems: 'center', marginHorizontal: 20 }}>
+            <Animated.Image
+              source={require('./assets/list.png')}
+              style={[
+                styles.footerIcon,
+                { transform: [{ translateY: footerIconJump }] },
+              ]}
+            />
+            <Text style={styles.footerIconText}>List</Text>
+          </Animated.View>
+        </TouchableWithoutFeedback>
+          
+          {/* Savings Icon */}
+          <TouchableWithoutFeedback 
+            onPress={() => {
+              Animated.sequence([
+                Animated.timing(footerIcon2Jump, {
+                  toValue: -10,
+                  duration: 100,
+                  useNativeDriver: true,
+      }),
+        Animated.timing(footerIcon2Jump, {
+        toValue: 0,
+        duration: 100,
+        useNativeDriver: true,
+            }),
+          ]).start();
+        }}
+      >
+      <Animated.View style={{ alignItems: 'center' }}>
+        <Animated.Image
+          source={require('./assets/savingsIcon.png')}
+          style={[
+            styles.footerIcon2, 
+            { transform: [{ translateY: footerIcon2Jump }] },
+          ]}
+        />
+        <Text style={styles.footerIcon2Text}>Savings</Text>
+      </Animated.View>
+    </TouchableWithoutFeedback>
+
+     {/*Plus Icon (footerIcon3) */}
+     <TouchableWithoutFeedback onPress={handleFooterIcon3Press}>
+          <Animated.View style={{ alignItems: 'center' }}>
+            <Animated.Image
+              source={require('./assets/plusIcon.png')} // Make sure the image is in the assets folder
+              style={[
+                styles.footerIcon3,
+                { transform: [{ translateY: footerIcon3Jump }] },
+              ]}
+            />
+          </Animated.View>
+        </TouchableWithoutFeedback>
+
+       {/* Wallet Icon (footerIcon4) */}
+       <TouchableWithoutFeedback onPress={handleFooterIcon4Press}>
+          <Animated.View style={{ alignItems: 'center' }}>
+            <Animated.Image
+              source={require('./assets/walletIcon.png')} // Make sure the image is in the assets folder
+              style={[
+                styles.footerIcon4,
+                { transform: [{ translateY: footerIcon4Jump }] },
+              ]}
+            />
+            <Text style={styles.footerIcon4Text}>Wallet</Text>
+          </Animated.View>
+        </TouchableWithoutFeedback>
+
+       {/* New AI Icon (footerIcon5) */}
+       <TouchableWithoutFeedback onPress={handleFooterIcon5Press}>
+          <Animated.View style={{ alignItems: 'center' }}>
+            <Animated.Image
+              source={require('./assets/AiIcon.png')} // Make sure the image is in the assets folder
+              style={[
+                styles.footerIcon5,
+                { transform: [{ translateY: footerIcon5Jump }] },
+              ]}
+            />
+            <Text style={styles.footerIcon5Text}>AI</Text>
+          </Animated.View>
+        </TouchableWithoutFeedback>
+        </View>
+
+        <TouchableWithoutFeedback onPress={() => {handlePress(1)
+          setSelectedBox('Income')
+          setInputValue(incomeValue)
+          setModalVisible(true);
+        }}>
           <Animated.View
             style={[styles.customBox, { transform: [{ translateY: jumpValue1 }] }]}
           >
             <Text style={styles.boxText}>Income</Text>
+            <Text style={styles.inputDisplay}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.5}>{incomeValue}</Text>
           </Animated.View>
         </TouchableWithoutFeedback>
 
-        <TouchableWithoutFeedback onPress={() => handlePress(2)}>
+        <TouchableWithoutFeedback onPress={() => {handlePress(2)
+          setSelectedBox('Expense')
+          setInputValue(expenseValue)
+          setModalVisible(true)
+        }}
+          >
           <Animated.View
             style={[styles.customBox2, { transform: [{ translateY: jumpValue2 }] }]}
           >
+            
             <Text style={styles.boxText2}>Expenses</Text>
+            <Text style={styles.inputDisplay}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.5}>{expenseValue}</Text>
           </Animated.View>
         </TouchableWithoutFeedback>
 
-        <TouchableWithoutFeedback onPress={() => handlePress(3)}>
+        <TouchableWithoutFeedback onPress={() => {handlePress(3)
+          setSelectedBox('Savings')
+          setInputValue(savingsValue)
+          setModalVisible(true)
+        }}>
           <Animated.View
             style={[styles.customBox3, { transform: [{ translateY: jumpValue3 }] }]}
           >
             <Text style={styles.boxText3}>Savings</Text>
+            <Text style={styles.inputDisplay}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.5}>{savingsValue}</Text>
           </Animated.View>
         </TouchableWithoutFeedback>
 
@@ -132,74 +320,59 @@ export default function HomePage({ route }) {
               <Text style={[styles.modalTitle, { color: modalTitleColor }]}>
                 {selectedBox}
               </Text>
+
               <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
                 <Text style={styles.closeButtonText}>X</Text>
               </TouchableOpacity>
 
               {/* Input display */}
               <Text style={styles.inputDisplay}>{inputValue}</Text>
+              <View style={styles.divider} />
+              {/* Keypad layout: 3x4 grid + 1x4 column */}
+              <View style={styles.calcGridContainer}>
+                {/* Number Grid */}
+                <View style={styles.numberGrid}>
+                  {['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'].map((num) => (
+                    <TouchableOpacity
+                      key={num}
+                      style={styles.calcButton}
+                      onPress={() => setInputValue(inputValue + num)}
+                    >
+                      <Text style={styles.calcButtonText}>{num}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
 
-              {/* Row 1 */}
-              <View style={styles.calcRow}>
-                {['1', '2', '3'].map((num) => (
+                {/* Action Column */}
+                <View style={styles.actionColumn}>
                   <TouchableOpacity
-                    key={num}
-                    style={styles.calcButton}
-                    onPress={() => setInputValue(inputValue + num)}
+                    style={[styles.calcButton, styles.deleteButton]}
+                    onPress={handleDelete}
                   >
-                    <Text style={styles.calcButtonText}>{num}</Text>
+                    <Text style={styles.calcButtonText}>Del</Text>
                   </TouchableOpacity>
-                ))}
-              </View>
 
-              {/* Row 2 */}
-              <View style={styles.calcRow}>
-                {['4', '5', '6'].map((num) => (
                   <TouchableOpacity
-                    key={num}
                     style={styles.calcButton}
-                    onPress={() => setInputValue(inputValue + num)}
+                    onPress={() => setInputValue(inputValue + ',')}
                   >
-                    <Text style={styles.calcButtonText}>{num}</Text>
+                    <Text style={styles.calcButtonText}>,</Text>
                   </TouchableOpacity>
-                ))}
-              </View>
 
-              {/* Row 3 */}
-              <View style={styles.calcRow}>
-                {['7', '8', '9'].map((num) => (
                   <TouchableOpacity
-                    key={num}
                     style={styles.calcButton}
-                    onPress={() => setInputValue(inputValue + num)}
+                    onPress={() => setInputValue(inputValue + '.')}
                   >
-                    <Text style={styles.calcButtonText}>{num}</Text>
+                    <Text style={styles.calcButtonText}>.</Text>
                   </TouchableOpacity>
-                ))}
-              </View>
 
-              {/* Row 4 (Delete, 0, Enter) */}
-              <View style={styles.calcRow}>
-                <TouchableOpacity
-                  style={[styles.calcButton, styles.deleteButton]}
-                  onPress={handleDelete}
-                >
-                  <Text style={styles.calcButtonText}>Del</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[styles.calcButton, styles.zeroButton]} 
-                  onPress={() => setInputValue(inputValue + '0')}
-                >
-                  <Text style={styles.calcButtonText}>0</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[styles.calcButton, styles.enterButton]}
-                  onPress={handleEnter}
-                >
-                  <Text style={styles.calcButtonText}>Enter</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.calcButton, styles.enterButton]}
+                    onPress={handleEnter}
+                  >
+                    <Text style={styles.calcButtonText}>Enter</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </View>
@@ -261,7 +434,7 @@ const styles = StyleSheet.create({
     color: '#3F6FFF',
     fontSize: 14,
     fontWeight: 'bold',
-    top: -20,
+    top: -12,
   },
   customBox2: {
     position: 'absolute',
@@ -278,7 +451,7 @@ const styles = StyleSheet.create({
     color: '#FF3434',
     fontSize: 14,
     fontWeight: 'bold',
-    top: -20,
+    top: -12,
   },
   customBox3: {
     position: 'absolute',
@@ -295,7 +468,7 @@ const styles = StyleSheet.create({
     color: '#5BFF66',
     fontSize: 14,
     fontWeight: 'bold',
-    top: -20,
+    top: -12,
   },
   modalContainer: {
     flex: 1,
@@ -335,41 +508,147 @@ const styles = StyleSheet.create({
   inputDisplay: {
     fontSize: 24,
     color: '#fff',
-    marginBottom: 20,
-    alignSelf: 'flex-start',
-    marginLeft: 5,
+    marginBottom: 0,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    alignSelf: 'center',
+    marginHorizontal: 5,
   },
-  calcRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    marginBottom: 15,
+  divider: {
+    height: 1,
+    backgroundColor: '#aaa',
+    marginVertical: 5,
     width: '100%',
   },
+  calcGridContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 60,
+  },
+  
+  numberGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: 210, // Adjust based on button size
+    justifyContent: 'center',
+  },
+  
+  actionColumn: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    marginLeft: 10,
+  },
+  
   calcButton: {
-    backgroundColor: '#fff',
     width: 60,
     height: 60,
+    margin: 4,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#ddd',
     borderRadius: 10,
-    marginHorizontal: 5,
   },
+  
   calcButtonText: {
     fontSize: 20,
-    color: '#000',
     fontWeight: 'bold',
   },
-  zeroButton: {
-    width: 60, 
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 5,
-  },
+  
   deleteButton: {
     backgroundColor: '#FF3434',
   },
+  
   enterButton: {
     backgroundColor: '#5BFF66',
   },
+  footer: {
+    position: 'absolute',
+    width: 393,
+    height: 100,
+    left: -3,
+    top: 740,
+    backgroundColor: '#2E2E2E',
+    borderRadius: 40,
+  },
+  footerIcon: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    left: 20,
+    top: 15, 
+  },
+  footerIconText: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    left: 33,
+    top: 52, 
+    fontSize: 12,
+    color: '#aaaaaa',
+    fontWeight: 'bold',
+  },
+  footerIcon2: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    left: 110, 
+    top: 12,   
+  },
+  footerIcon2Text: {
+    position: 'absolute',
+    width: 60,
+    height: 40,
+    left: 108, 
+    top: 52,   
+    fontSize: 12,
+    color: '#aaaaaa',
+    fontWeight: 'bold',
+  },
+  footerIcon3: {
+    position: 'absolute',
+    width: 70,
+    height: 70,
+    left: 165, 
+    top: -25,   
+  },
+
+  footerIcon4: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    left: 250, 
+    top: 15,   
+  },
+  footerIcon4Text: {
+    position: 'absolute',
+    width: 60,
+    height: 40,
+    left: 253, 
+    top: 52,   
+    fontSize: 12,
+    color: '#aaaaaa',
+    fontWeight: 'bold',
+  },
+
+  footerIcon5: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    left: 310,
+    top: 15,   
+  },
+  footerIcon5Text: {
+    position: 'absolute',
+    width: 60,
+    height: 40,
+    left: 325, 
+    top: 52,   
+    fontSize: 12,
+    color: '#aaaaaa',
+    fontWeight: 'bold',
+  },
+
+  
+
 });

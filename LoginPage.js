@@ -234,4 +234,46 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
   },
+  calcGridContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  
+  numberGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: 180, // Adjust based on button size
+    justifyContent: 'center',
+  },
+  
+  actionColumn: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    marginLeft: 10,
+  },
+  
+  calcButton: {
+    width: 50,
+    height: 50,
+    margin: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ddd',
+    borderRadius: 10,
+  },
+  
+  calcButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  
+  deleteButton: {
+    backgroundColor: '#f88',
+  },
+  
+  enterButton: {
+    backgroundColor: '#8f8',
+  },
 });
