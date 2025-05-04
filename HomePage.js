@@ -466,11 +466,11 @@ const styles = StyleSheet.create({
   },
   
   deleteButton: {
-    backgroundColor: '#f88',
+    backgroundColor: '#FF3434',
   },
   
   enterButton: {
-    backgroundColor: '#8f8',
+    backgroundColor: '#5BFF66',
   },
   footer: {
     position: 'absolute',
