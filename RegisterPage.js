@@ -86,7 +86,8 @@ export default function RegisterPage({ navigation }) {
     }
 
     if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match.');
+      setError('Passwords do not match.');
+      Vibration.vibrate();
       return;
     }
 
@@ -97,7 +98,8 @@ export default function RegisterPage({ navigation }) {
       );
 
       if (existingUser) {
-        Alert.alert('Username already exists.');
+        setError('Username already exists.');
+        Vibration.vibrate();
         return;
       }
 
@@ -105,7 +107,6 @@ export default function RegisterPage({ navigation }) {
         'INSERT INTO users (username, password) VALUES (?, ?)',
         [username, password]
       );
-      Alert.alert('Registration Successful!');
       navigation.navigate('HomePage', { username });
 
     } catch (error) {
