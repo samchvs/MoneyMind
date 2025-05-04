@@ -6,6 +6,7 @@ import { createStackNavigator, TransitionPresets } from '@react-navigation/stack
 import LoadingPage from './LoadingPage'; 
 import LoginPage from './LoginPage'; 
 import HomePage from './HomePage';
+import { SQLiteProvider } from 'expo-sqlite';
 
 const Stack = createStackNavigator();
 
@@ -32,6 +33,7 @@ export default function App() {
   }
 
   return (
+    <SQLiteProvider databaseName='db.db'>
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
@@ -43,6 +45,7 @@ export default function App() {
         <Stack.Screen name="HomePage" component={HomePage} />
       </Stack.Navigator>
     </NavigationContainer>
+    </SQLiteProvider>
   );
 }
 

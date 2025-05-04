@@ -1,7 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, TextInput, Text, Image, Animated, TouchableOpacity, Vibration } from 'react-native';  
+import { StyleSheet, TextInput, Text, Image, Animated, TouchableOpacity, Vibration, Alert } from 'react-native';  
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { SQLiteProvider, useSQLiteContext } from 'expo-sqlite';
+
+const initializeDatabase = async(db) => {
+  try {
+    await db.execAsync(`
+      PRAGMA journal_mode = WAL;
+
+      CREATE TABLE IF NOT EXISTS users (
+        user_id INTEGER PRIMARY KEY AUTOINCREMENT, 
+        username TEXT UNIQUE NOT NULL, 
+      )
+      `);
+      console.log('Database Initialized!');
+  } catch (error) {
+    console.log('Error while initializing the database: ', error);
+  }
+}
 
 export default function LoginPage({ navigation }) {
   const [username, setUsername] = useState('');
@@ -49,16 +66,38 @@ export default function LoginPage({ navigation }) {
     });
   }, []);
 
-  const handleLogin = () => {
-    if (username.trim() === '') {
-      setError('Please enter your username before proceeding.');
-      Vibration.vibrate(); 
-    } else {
-      setError(''); 
-      console.log('Navigating with username:', username); //debugger in console but works sa app na
-      navigation.navigate('HomePage', { username });
+  const db = useSQLiteContext();
+
+  const handleLogin = async () => {
+  if (username.trim() === '') {
+    setError('Please enter your username before proceeding.');
+    Vibration.vibrate(); 
+    return;  
+  }
+
+  try {
+    const existingUser = await db.getFirstAsync(
+      'SELECT * FROM users WHERE username = ?',
+      [username]
+    );
+
+    if (existingUser) {
+      Alert.alert('Username already exists.');
+      return;
     }
-  };
+
+    await db.runAsync(
+      'INSERT INTO users (username) VALUES (?)',
+      [username]
+    );
+    
+    console.log('Navigating with username:', username);
+    navigation.navigate('HomePage', { username: username });
+    
+  } catch (error) {
+    console.log('Error during registration: ', error);
+  }
+};
 
   return (
     <LinearGradient
