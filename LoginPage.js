@@ -3,6 +3,7 @@ import { StyleSheet, TextInput, Text, Image, Animated, TouchableOpacity, Vibrati
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SQLiteProvider, useSQLiteContext } from 'expo-sqlite';
+import { InitializeDatabase } from './RegisterPage';
 
 
 export default function LoginPage({ navigation }) {
@@ -16,6 +17,7 @@ export default function LoginPage({ navigation }) {
   const buttonMoveUp = useRef(new Animated.Value(100)).current;   
 
   useEffect(() => {
+    InitializeDatabase(db); 
     Animated.parallel([
       Animated.spring(logoMoveUp, {
         toValue: -100,
@@ -69,7 +71,7 @@ export default function LoginPage({ navigation }) {
   
       if (!existingUser) {
         setError('Username does not exist');
-        Vibration.vibrate(); // Vibrate to alert the user
+        Vibration.vibrate(); 
         return;
       }
   
@@ -78,12 +80,11 @@ export default function LoginPage({ navigation }) {
       );
   
       if (validUser) {
-        // Removed the success alert here
         console.log('Navigating with username:', username);
         navigation.navigate('HomePage', { username: username });
       } else {
         setError('Invalid Password');
-        Vibration.vibrate(); // Vibrate to alert the user
+        Vibration.vibrate(); 
         return;
       }
     } catch (error) {

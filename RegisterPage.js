@@ -4,6 +4,21 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSQLiteContext } from 'expo-sqlite';
 
+export const InitializeDatabase = async (db) => {
+  try {
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS users (
+        user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL
+      );
+    `);
+    console.log('Users table reset successfully');
+  } catch (error) {
+    console.error('Failed to reset users table:', error);
+  }
+};
+
 export default function RegisterPage({ navigation }) {
   const db = useSQLiteContext();
 
@@ -18,21 +33,7 @@ export default function RegisterPage({ navigation }) {
   const buttonOpacity = useRef(new Animated.Value(0)).current;
   const buttonMoveUp = useRef(new Animated.Value(100)).current;
 
-  const InitializeDatabase = async (db) => {
-    try {
-      await db.execAsync(`
-        DROP TABLE IF EXISTS users;
-        CREATE TABLE IF NOT EXISTS users (
-          user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-          username TEXT NOT NULL UNIQUE,
-          password TEXT NOT NULL
-        );
-      `);
-      console.log('Users table reset successfully');
-    } catch (error) {
-      console.error('Failed to reset users table:', error);
-    }
-  };
+ 
 
 
   useEffect(() => {

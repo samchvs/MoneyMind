@@ -13,6 +13,8 @@ import {
   
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
+
 
 export default function HomePage({ route }) {
   const username = route?.params?.username;
@@ -31,7 +33,7 @@ export default function HomePage({ route }) {
   const [incomeValue, setIncomeValue] = useState('');
   const [expenseValue, setExpenseValue] = useState('');
   const [savingsValue, setSavingsValue] = useState('');
-  
+  const navigation = useNavigation();
   
 
   const handlePress = (boxNumber) => {
@@ -188,39 +190,43 @@ export default function HomePage({ route }) {
         </TouchableWithoutFeedback>
           
           {/* Savings Icon */}
-          <TouchableWithoutFeedback 
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={{ alignItems: 'center', marginHorizontal: 20 }}
             onPress={() => {
               Animated.sequence([
                 Animated.timing(footerIcon2Jump, {
                   toValue: -10,
                   duration: 100,
                   useNativeDriver: true,
-      }),
-        Animated.timing(footerIcon2Jump, {
-        toValue: 0,
-        duration: 100,
-        useNativeDriver: true,
-            }),
-          ]).start();
-        }}
-      >
-      <Animated.View style={{ alignItems: 'center' }}>
-        <Animated.Image
-          source={require('./assets/savingsIcon.png')}
-          style={[
-            styles.footerIcon2, 
-            { transform: [{ translateY: footerIcon2Jump }] },
-          ]}
-        />
-        <Text style={styles.footerIcon2Text}>Savings</Text>
-      </Animated.View>
-    </TouchableWithoutFeedback>
+          }),
+              Animated.timing(footerIcon2Jump, {
+                  toValue: 0,
+                  duration: 100,
+                  useNativeDriver: true,
+          }),
+        ]).start(() => {
+          navigation.navigate('SavingsPage', {username}); //navigation to savingpage
+    });
+  }}
+>
+  <Animated.Image
+    source={require('./assets/savingsIcon.png')}
+    style={[
+      styles.footerIcon2,
+      { transform: [{ translateY: footerIcon2Jump }] },
+    ]}
+  />
+  <Text style={styles.footerIcon2Text}>Savings</Text>
+</TouchableOpacity>
+
+
 
      {/*Plus Icon (footerIcon3) */}
      <TouchableWithoutFeedback onPress={handleFooterIcon3Press}>
           <Animated.View style={{ alignItems: 'center' }}>
             <Animated.Image
-              source={require('./assets/plusIcon.png')} // Make sure the image is in the assets folder
+              source={require('./assets/plusIcon.png')} 
               style={[
                 styles.footerIcon3,
                 { transform: [{ translateY: footerIcon3Jump }] },
@@ -592,14 +598,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 40,
     height: 40,
-    left: 110, 
+    left: 90, 
     top: 12,   
   },
   footerIcon2Text: {
     position: 'absolute',
     width: 60,
     height: 40,
-    left: 108, 
+    left: 90, 
     top: 52,   
     fontSize: 12,
     color: '#aaaaaa',

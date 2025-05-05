@@ -7,6 +7,7 @@ import LoadingPage from './LoadingPage';
 import LoginPage from './LoginPage';
 import HomePage from './HomePage';
 import RegisterPage from './RegisterPage';
+import SavingsPage from './SavingsPage';
 import { SQLiteProvider } from 'expo-sqlite';
 
 const Stack = createStackNavigator();
@@ -47,6 +48,7 @@ export default function App() {
             <Stack.Screen name="LoginPage" component={LoginPage} />
             <Stack.Screen name="RegisterPage" component={RegisterPage} />
             <Stack.Screen name="HomePage" component={HomePage} />
+            <Stack.Screen name="SavingsPage" component={SavingsPage} />
           </Stack.Navigator>
         </NavigationContainer>
       )}
