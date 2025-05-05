@@ -13,6 +13,7 @@ export default function SavingsPage({ route }) {
         <View style={styles.header}>
           <Text style={styles.title}>Welcome,</Text>
           <Text style={styles.username}>{username}!</Text>
+          <Text style={styles.pageTitle}>Savings Goal</Text>
         </View>
       </View>
     </LinearGradient>
@@ -50,5 +51,11 @@ const styles = StyleSheet.create({
     height: 24,
     marginRight: -40,
     marginTop: 7,
+  },
+  pageTitle: {
+    fontSize: 35,
+    color: '#fff',
+    fontWeight: 'bold',
+    marginTop: 30,
   },
 });
