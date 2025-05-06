@@ -178,12 +178,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   totalSavingsText: {
-    fontSize: 14, // Adjust the font size
-    fontWeight: 'bold', // Make the text bold
-    color: '#fff', // White color for the text
-    marginTop: 50, // Add some spacing from the top
-    marginBottom: -10, // Add spacing between the text and the chart
-    textAlign: 'center', // Center the text horizontally
+    fontSize: 14, 
+    fontWeight: 'bold', 
+    color: '#fff', 
+    marginTop: 50, 
+    marginBottom: -10, 
+    textAlign: 'center', 
   },
   chartWrapper: {
     marginTop: 40,
@@ -272,23 +272,23 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   rectangle: {
-    width: 350, // Width of the rectangle
-    height: 80, // Height of the rectangle
-    backgroundColor: '#2E2E2E', // Background color of the rectangle
-    borderRadius: 20, // Optional: Rounded corners
-    marginVertical: 20, // Optional: Spacing around the rectangle
-    alignSelf: 'center', // Center horizontally
+    width: 350, 
+    height: 80, 
+    backgroundColor: '#2E2E2E', 
+    borderRadius: 20, 
+    marginVertical: 20, 
+    alignSelf: 'center', 
   },
   rectangleText: {
     fontSize: 13, 
     fontWeight: 'bold', 
     color: '#fff', 
     textAlign: 'left', 
-    marginHorizontal: 20, // Horizontal padding
-    marginTop: -25, // Vertical padding
-    lineHeight: 100, // Vertically center the text (same as rectangle height)
-    overflow: 'hidden', // Ensure text does not overflow the rectangle
-    width: '100%', // Ensure the text stays within the rectangle's width
+    marginHorizontal: 20, 
+    marginTop: -25, 
+    lineHeight: 100, 
+    overflow: 'hidden',
+    width: '100%', 
   },
   rectangleText1: {
     fontSize: 12,
@@ -296,9 +296,9 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     marginTop: -40,
     marginHorizontal: 20,
-    flexWrap: 'wrap', // Allow text to wrap
-    width: '100%', // Ensure the text stays within the rectangle's width
-    overflow: 'hidden', // Prevent text overflow
+    flexWrap: 'wrap', 
+    width: '100%', 
+    overflow: 'hidden', 
   },
   
 });
