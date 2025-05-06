@@ -9,8 +9,8 @@ export default function SavingsPage() {
   const [savings, setSavings] = useState('');
   const [goal, setGoal] = useState('');
   const parsedSavings = parseFloat(savings) || 0;
-  const parsedGoal = parseFloat(goal) || 1; //avoid divsion by zero
-  const [modalVisible, setModalVisible] = useState(false);  //modals storing
+  const parsedGoal = parseFloat(goal) || 1; 
+  const [modalVisible, setModalVisible] = useState(false);  
   const [modalInput, setModalInput] = useState('');
   
 
@@ -45,8 +45,8 @@ export default function SavingsPage() {
         <View style={styles.chartWrapper}>
           <PieChart
             data={pieData}
-            width={width - 60}
-            height={240}
+            width={width - 40}
+            height={220}
             chartConfig={{
               color: () => `#fff`,
               labelColor: () => '#fff',
@@ -114,7 +114,16 @@ export default function SavingsPage() {
 
         <View style={styles.inputContainer}>
           
-          <Text style={styles.inputLabel}>Enter Goal:</Text>
+        <View style={styles.rectangle}>
+          <Text style={styles.rectangleText}>You should set a target 🎯</Text>
+            <Text style={styles.rectangleText1}>
+              Saving is so much easier when you have a {'\n'}clear idea of what you're aiming for.
+            </Text>   
+              
+        </View>
+          
+          
+          <Text style={styles.inputLabel}>Enter Goal:</Text>   
           <TextInput
             style={styles.input}
             keyboardType="numeric"
@@ -124,8 +133,6 @@ export default function SavingsPage() {
             onChangeText={setGoal}
           />
         </View>
-
-        <View style={styles.rectangle} />
 
       
       </ScrollView>
@@ -266,12 +273,32 @@ const styles = StyleSheet.create({
   },
   rectangle: {
     width: 350, // Width of the rectangle
-    height: 100, // Height of the rectangle
+    height: 80, // Height of the rectangle
     backgroundColor: '#2E2E2E', // Background color of the rectangle
     borderRadius: 20, // Optional: Rounded corners
     marginVertical: 20, // Optional: Spacing around the rectangle
     alignSelf: 'center', // Center horizontally
   },
-  
+  rectangleText: {
+    fontSize: 13, 
+    fontWeight: 'bold', 
+    color: '#fff', 
+    textAlign: 'left', 
+    marginHorizontal: 20, // Horizontal padding
+    marginTop: -25, // Vertical padding
+    lineHeight: 100, // Vertically center the text (same as rectangle height)
+    overflow: 'hidden', // Ensure text does not overflow the rectangle
+    width: '100%', // Ensure the text stays within the rectangle's width
+  },
+  rectangleText1: {
+    fontSize: 12,
+    color: '#fff',
+    textAlign: 'left',
+    marginTop: -40,
+    marginHorizontal: 20,
+    flexWrap: 'wrap', // Allow text to wrap
+    width: '100%', // Ensure the text stays within the rectangle's width
+    overflow: 'hidden', // Prevent text overflow
+  },
   
 });
