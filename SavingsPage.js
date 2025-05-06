@@ -24,7 +24,7 @@ export default function SavingsPage() {
     {
       name: 'Remaining',
       amount: Math.max(parsedGoal - parsedSavings, 0),
-      color: '#555555',
+      color: '#ffffff',
       legendFontColor: '#ffffff',
       legendFontSize: 14,
     },
