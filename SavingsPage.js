@@ -14,6 +14,7 @@ export default function SavingsPage() {
   const parsedGoal = parseFloat(goal) || 1; //avoid divsion by zero
   const [modalVisible, setModalVisible] = useState(false);  //modals storing
   const [modalInput, setModalInput] = useState('');
+  
 
   const pieData = [
     {
@@ -110,16 +111,7 @@ export default function SavingsPage() {
         </Modal>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>Enter Savings:</Text>
-          <TextInput
-            style={styles.input}
-            keyboardType="numeric"
-            placeholder="e.g., 300"
-            placeholderTextColor="#777"
-            value={savings}
-            onChangeText={setSavings}
-          />
-
+          
           <Text style={styles.inputLabel}>Enter Goal:</Text>
           <TextInput
             style={styles.input}
@@ -181,8 +173,8 @@ const styles = StyleSheet.create({
     left: 73,
   },
   customLegend: {
-    flexDirection: 'row', // make children sit side by side
-    justifyContent: 'space-around', // add spacing between them
+    flexDirection: 'row', 
+    justifyContent: 'space-around', 
     marginTop: 20,
     paddingHorizontal: 20,
   },
