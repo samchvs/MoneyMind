@@ -3,8 +3,6 @@ import { View, Text, StyleSheet, Dimensions, ScrollView, TextInput, TouchableOpa
 import { LinearGradient } from 'expo-linear-gradient';
 import { PieChart } from 'react-native-chart-kit';
 
-
-
 const { width } = Dimensions.get('window');
 
 export default function SavingsPage() {
@@ -38,6 +36,10 @@ export default function SavingsPage() {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.header}>
           <Text style={styles.pageTitle}>Savings Goal</Text>
+        </View>
+
+        <View style={styles.totalSavingsContainer}>
+          <Text style={styles.totalSavingsText}>Total Savings</Text>
         </View>
 
         <View style={styles.chartWrapper}>
@@ -123,6 +125,8 @@ export default function SavingsPage() {
           />
         </View>
 
+        <View style={styles.rectangle} />
+
       
       </ScrollView>
     </LinearGradient>
@@ -142,7 +146,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     width: '100%',
     paddingHorizontal: 20,
-    paddingTop: 50,
+    paddingTop: 70,
   },
   pageTitle: {
     fontSize: 35,
@@ -165,6 +169,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingVertical: 5,
     marginBottom: 10,
+  },
+  totalSavingsText: {
+    fontSize: 14, // Adjust the font size
+    fontWeight: 'bold', // Make the text bold
+    color: '#fff', // White color for the text
+    marginTop: 50, // Add some spacing from the top
+    marginBottom: -10, // Add spacing between the text and the chart
+    textAlign: 'center', // Center the text horizontally
   },
   chartWrapper: {
     marginTop: 40,
@@ -252,7 +264,14 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
-  
+  rectangle: {
+    width: 350, // Width of the rectangle
+    height: 100, // Height of the rectangle
+    backgroundColor: '#2E2E2E', // Background color of the rectangle
+    borderRadius: 20, // Optional: Rounded corners
+    marginVertical: 20, // Optional: Spacing around the rectangle
+    alignSelf: 'center', // Center horizontally
+  },
   
   
 });
