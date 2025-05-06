@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Dimensions, ScrollView, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, ScrollView, TextInput, TouchableOpacity, Modal } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { PieChart } from 'react-native-chart-kit';
+
 
 
 const { width } = Dimensions.get('window');
@@ -9,9 +10,10 @@ const { width } = Dimensions.get('window');
 export default function SavingsPage() {
   const [savings, setSavings] = useState('');
   const [goal, setGoal] = useState('');
-
   const parsedSavings = parseFloat(savings) || 0;
-  const parsedGoal = parseFloat(goal) || 1;
+  const parsedGoal = parseFloat(goal) || 1; //avoid divsion by zero
+  const [modalVisible, setModalVisible] = useState(false);  //modals storing
+  const [modalInput, setModalInput] = useState('');
 
   const pieData = [
     {
@@ -35,28 +37,6 @@ export default function SavingsPage() {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.header}>
           <Text style={styles.pageTitle}>Savings Goal</Text>
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>Enter Savings:</Text>
-          <TextInput
-            style={styles.input}
-            keyboardType="numeric"
-            placeholder="e.g., 300"
-            placeholderTextColor="#777"
-            value={savings}
-            onChangeText={setSavings}
-          />
-
-          <Text style={styles.inputLabel}>Enter Goal:</Text>
-          <TextInput
-            style={styles.input}
-            keyboardType="numeric"
-            placeholder="e.g., 1000"
-            placeholderTextColor="#777"
-            value={goal}
-            onChangeText={setGoal}
-          />
         </View>
 
         <View style={styles.chartWrapper}>
@@ -85,6 +65,73 @@ export default function SavingsPage() {
             </View>
           ))}
         </View>
+
+        <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
+          <Text style={styles.addButtonText}>+ Add Funds</Text>
+        </TouchableOpacity>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Add Funds</Text>
+              <TextInput
+                style={styles.modalInput}
+                placeholder="Enter amount"
+                keyboardType="numeric"
+                placeholderTextColor="#aaa"
+                value={modalInput}
+                onChangeText={setModalInput}
+              />
+
+              <TouchableOpacity
+                style={styles.modalDoneButton}
+                onPress={() => {
+                  const additional = parseFloat(modalInput);
+                  const current = parseFloat(savings) || 0;
+
+                  if (!isNaN(additional)) {
+                    const newTotal = current + additional;
+                    setSavings(newTotal.toString());
+                  }
+
+                  setModalInput('');
+                  setModalVisible(false);
+                }}
+              >
+                <Text style={styles.modalDoneText}>Done</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Enter Savings:</Text>
+          <TextInput
+            style={styles.input}
+            keyboardType="numeric"
+            placeholder="e.g., 300"
+            placeholderTextColor="#777"
+            value={savings}
+            onChangeText={setSavings}
+          />
+
+          <Text style={styles.inputLabel}>Enter Goal:</Text>
+          <TextInput
+            style={styles.input}
+            keyboardType="numeric"
+            placeholder="e.g., 1000"
+            placeholderTextColor="#777"
+            value={goal}
+            onChangeText={setGoal}
+          />
+        </View>
+
+      
       </ScrollView>
     </LinearGradient>
   );
@@ -134,8 +181,10 @@ const styles = StyleSheet.create({
     left: 73,
   },
   customLegend: {
+    flexDirection: 'row', // make children sit side by side
+    justifyContent: 'space-around', // add spacing between them
     marginTop: 20,
-    alignItems: 'center',
+    paddingHorizontal: 20,
   },
   legendItem: {
     flexDirection: 'row',
@@ -152,4 +201,66 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 14,
   },
+  addButton: {
+    marginTop: 20,
+    backgroundColor: '#00cc99',
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+    alignSelf: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  
+  addButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: '#1c1c1c',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 20,
+    color: '#fff',
+    marginBottom: 15,
+    fontWeight: 'bold',
+  },
+  modalInput: {
+    width: '100%',
+    borderBottomWidth: 1,
+    borderBottomColor: '#00cc99',
+    color: '#fff',
+    fontSize: 16,
+    marginBottom: 20,
+    paddingVertical: 5,
+  },
+  modalDoneButton: {
+    backgroundColor: '#00cc99',
+    paddingVertical: 10,
+    paddingHorizontal: 25,
+    borderRadius: 20,
+    marginTop: 10,
+  },
+  modalDoneText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  
+  
+  
 });
