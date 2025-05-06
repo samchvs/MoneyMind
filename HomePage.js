@@ -157,11 +157,13 @@ export default function HomePage({ route }) {
   };
 
   return (
+    
     <LinearGradient
       colors={['#000000', '#171717', '#232323', '#3b3b3b', '#4f4f4f']}
       style={styles.container}
     >
       <SafeAreaView style={styles.container}>
+
         <View style={styles.header}>
           <View>
             <Text style={styles.title}>Welcome,</Text>
@@ -208,6 +210,7 @@ export default function HomePage({ route }) {
         ]).start(() => {
           navigation.navigate('SavingsPage', {username}); //navigation to savingpage
     });
+    
   }}
 >
   <Animated.Image
@@ -220,20 +223,7 @@ export default function HomePage({ route }) {
   <Text style={styles.footerIcon2Text}>Savings</Text>
 </TouchableOpacity>
 
-
-
-     {/*Plus Icon (footerIcon3) */}
-     <TouchableWithoutFeedback onPress={handleFooterIcon3Press}>
-          <Animated.View style={{ alignItems: 'center' }}>
-            <Animated.Image
-              source={require('./assets/plusIcon.png')} 
-              style={[
-                styles.footerIcon3,
-                { transform: [{ translateY: footerIcon3Jump }] },
-              ]}
-            />
-          </Animated.View>
-        </TouchableWithoutFeedback>
+     
 
        {/* Wallet Icon (footerIcon4) */}
        <TouchableWithoutFeedback onPress={handleFooterIcon4Press}>
@@ -313,7 +303,7 @@ export default function HomePage({ route }) {
             minimumFontScale={0.5}>{savingsValue}</Text>
           </Animated.View>
         </TouchableWithoutFeedback>
-
+        
         {/* Modal */}
         <Modal
           animationType="slide"
@@ -536,7 +526,7 @@ const styles = StyleSheet.create({
   numberGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    width: 210, // Adjust based on button size
+    width: 210, 
     justifyContent: 'center',
   },
   
@@ -573,23 +563,23 @@ const styles = StyleSheet.create({
     width: 393,
     height: 100,
     left: -3,
-    top: 740,
-    backgroundColor: '#2E2E2E',
+    top: 760,
+    backgroundColor: '#171717',
     borderRadius: 40,
   },
   footerIcon: {
     position: 'absolute',
     width: 40,
     height: 40,
-    left: 20,
-    top: 15, 
+    left: 45,
+    top: 8, 
   },
   footerIconText: {
     position: 'absolute',
     width: 40,
     height: 40,
-    left: 33,
-    top: 52, 
+    left: 57,
+    top: 45, 
     fontSize: 12,
     color: '#aaaaaa',
     fontWeight: 'bold',
@@ -598,40 +588,33 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 40,
     height: 40,
-    left: 90, 
-    top: 12,   
+    left: 120, 
+    top: 6,   
   },
   footerIcon2Text: {
     position: 'absolute',
     width: 60,
     height: 40,
-    left: 90, 
-    top: 52,   
+    left: 120, 
+    top: 45,   
     fontSize: 12,
     color: '#aaaaaa',
     fontWeight: 'bold',
-  },
-  footerIcon3: {
-    position: 'absolute',
-    width: 70,
-    height: 70,
-    left: 165, 
-    top: -25,   
   },
 
   footerIcon4: {
     position: 'absolute',
     width: 40,
     height: 40,
-    left: 250, 
-    top: 15,   
+    left: 210, 
+    top: 8,   
   },
   footerIcon4Text: {
     position: 'absolute',
     width: 60,
     height: 40,
-    left: 253, 
-    top: 52,   
+    left: 213, 
+    top: 45,   
     fontSize: 12,
     color: '#aaaaaa',
     fontWeight: 'bold',
@@ -641,20 +624,18 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 40,
     height: 40,
-    left: 310,
-    top: 15,   
+    left: 280,
+    top: 8,   
   },
   footerIcon5Text: {
     position: 'absolute',
     width: 60,
     height: 40,
-    left: 325, 
-    top: 52,   
+    left: 295, 
+    top: 45,   
     fontSize: 12,
     color: '#aaaaaa',
     fontWeight: 'bold',
   },
-
-  
 
 });
