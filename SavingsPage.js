@@ -2,18 +2,16 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, ScrollView, TextInput } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { PieChart } from 'react-native-chart-kit';
-import Footer from './Footer';
+
 
 const { width } = Dimensions.get('window');
 
-export default function SavingsPage({ route }) {
-  const { username } = route.params;
-
+export default function SavingsPage() {
   const [savings, setSavings] = useState('');
   const [goal, setGoal] = useState('');
 
   const parsedSavings = parseFloat(savings) || 0;
-  const parsedGoal = parseFloat(goal) || 1; 
+  const parsedGoal = parseFloat(goal) || 1;
 
   const pieData = [
     {
@@ -36,8 +34,6 @@ export default function SavingsPage({ route }) {
     <LinearGradient colors={['#000000', '#171717', '#232323', '#3b3b3b', '#4f4f4f']} style={styles.gradientContainer}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>Welcome,</Text>
-          <Text style={styles.username}>{username}!</Text>
           <Text style={styles.pageTitle}>Savings Goal</Text>
         </View>
 
@@ -75,7 +71,7 @@ export default function SavingsPage({ route }) {
             accessor="amount"
             backgroundColor="transparent"
             paddingLeft="15"
-            hasLegend={false} // Hide the default legend
+            hasLegend={false}
           />
         </View>
 
@@ -89,9 +85,7 @@ export default function SavingsPage({ route }) {
             </View>
           ))}
         </View>
-        
       </ScrollView>
-      <Footer />
     </LinearGradient>
   );
 }
@@ -111,22 +105,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 50,
   },
-  title: {
-    fontSize: 15,
-    color: '#aaaaaa',
-    fontWeight: 'bold',
-  },
-  username: {
-    fontSize: 20,
-    color: '#fff',
-    marginTop: -5,
-    fontWeight: 'bold',
-  },
   pageTitle: {
     fontSize: 35,
     color: '#fff',
     fontWeight: 'bold',
-    marginTop: 30,
   },
   inputContainer: {
     marginTop: 30,
