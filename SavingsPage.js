@@ -14,12 +14,9 @@ export default function SavingsPage() {
   const [modalVisible, setModalVisible] = useState(false);  
   const [modalInput, setModalInput] = useState('');
   const [goalDateModalVisible, setGoalDateModalVisible] = useState(false);
-
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
-
   const [isGoalSet, setIsGoalSet] = useState(false);
-
   const remaining = Math.max(parsedGoal - parsedSavings, 0);
 
   
@@ -43,20 +40,26 @@ export default function SavingsPage() {
     }
   };
 
+  const handleStartNewGoal = () => {
+    setGoal('');
+    setIsGoalSet(false);
+    setSelectedDate(null);
+    setSavings('');
+  };
 
   const pieData = [
     {
       name: 'Saved',
       amount: parsedSavings,
       color: '#00cc99',
-      legendFontColor: '#ffffff',
+      legendFontColor: '#transparent',
       legendFontSize: 14,
     },
     {
       name: 'Remaining',
       amount: Math.max(parsedGoal - parsedSavings, 0),
       color: '#ffffff',
-      legendFontColor: '#ffffff',
+      legendFontColor: 'transparent',
       legendFontSize: 14,
     },
   ];
@@ -90,18 +93,17 @@ export default function SavingsPage() {
             paddingLeft="15"
             hasLegend={false}
           />
-         
         </View>
 
         <View style={styles.customLegend}>
           {pieData.map((item, index) => (
             <View key={index} style={styles.legendItem}>
               <View style={[styles.legendColor, { backgroundColor: item.color }]} />
-              <Text style={styles.legendText}>
-                {item.name}: {item.amount}
-              </Text>
+                 <Text style={styles.legendText}>
+                    {item.name}
+                  </Text>
             </View>
-          ))}
+          ))} 
         </View>
 
         <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
@@ -126,7 +128,7 @@ export default function SavingsPage() {
                   </Text>
                 ) 
             )}    
-    </View>
+        </View>
         <Modal
           animationType="slide"
           transparent={true}
@@ -165,8 +167,6 @@ export default function SavingsPage() {
             </View>
           </View>
         </Modal>
-
-
 
         <View style={styles.inputContainer}>
         <View style={styles.rectangle}>
@@ -237,6 +237,18 @@ export default function SavingsPage() {
       </Modal>
     </View>
 
+    <View style={styles.quoteContainer}>
+      <Text style={styles.quoteText}>
+        "If you want to get rich, think of saving as earning"{'\n'}- Andrew Carnegie.
+      </Text>
+    </View>
+
+   {remaining === 0 && remaining === 0.00 &&(
+      <TouchableOpacity style={styles.newGoalButton} onPress={handleStartNewGoal}>
+        <Text style={styles.newGoalButtonText}>Start a New Goal</Text>
+      </TouchableOpacity>
+    )}
+
       </ScrollView>
     </LinearGradient>
   );
@@ -255,7 +267,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     width: '100%',
     paddingHorizontal: 20,
-    paddingTop: 70,
+    paddingTop: 40,
   },
   pageTitle: {
     fontSize: 35,
@@ -280,7 +292,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   chartWrapper: {
-    marginTop: 20,
+    marginTop: 10,
     alignItems: 'center',
     justifyContent: 'center',
     left: 73,
@@ -307,7 +319,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   addButton: {
-    marginTop: 30,
+    marginTop: 20,
     backgroundColor: '#00cc99',
     paddingVertical: 12,
     paddingHorizontal: 30,
@@ -431,7 +443,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   modalDoneButton1: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#00cc99',
     paddingVertical: 10,
     paddingHorizontal: 30,
     borderRadius: 10,
@@ -472,18 +484,45 @@ const styles = StyleSheet.create({
   progressContainer: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center', // Centers content horizontally and vertically
-    paddingHorizontal: 20, // 
-    marginTop: 25, // Adds some space above the progress message
-    marginBottom: -20, // Adds some space below the progress message
+    alignItems: 'center', 
+    paddingHorizontal: 20, 
+    marginTop: 25, 
+    marginBottom: -20, 
   },
   progressMessage: {
-    textAlign: 'center', // Centers the text
-    fontSize: 16, // Adjust the font size to be mobile-friendly
-    color: '#fff', // Adjust the text color to suit your design
-    maxWidth: '90%', // Ensures the text doesn't overflow the screen
-    padding: 10, // Optional, adds some padding around the text
-    lineHeight: 22, // Optional, for better line
+    textAlign: 'center', 
+    fontSize: 16, 
+    color: '#fff', 
+    maxWidth: '90%', 
+    padding: 10, 
+    lineHeight: 22, 
+  },
+  quoteContainer: {
+    marginTop: 10,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  quoteText: {
+    fontSize: 14,
+    fontStyle: 'italic',
+    color: '#ccc',
+    textAlign: 'center',
+  },
+  newGoalButton: {
+    backgroundColor: '#00cc99',
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 20,
+    width: '50%', // full width 
+    alignSelf: 'center',
+  },
+  
+  newGoalButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   
 });
