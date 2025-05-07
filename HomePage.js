@@ -10,14 +10,18 @@ import {
   TouchableWithoutFeedback,
   Modal,
   TouchableOpacity,
-  
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-
+import { SQLiteProvider } from 'expo-sqlite';
+import { useUser } from './UserContext';
 
 export default function HomePage({ route }) {
   const username = route?.params?.username;
+  const { loggedInUser } = useUser();
+  console.log('HomePage - loggedInUser from context:', loggedInUser);
+  const currentLoggedInUser = loggedInUser?.user_id;
+  console.log('HomePage - currentLoggedInUserId:', currentLoggedInUser)
   const [jumpValue1] = useState(new Animated.Value(0));
   const [jumpValue2] = useState(new Animated.Value(0));
   const [jumpValue3] = useState(new Animated.Value(0));
@@ -34,7 +38,8 @@ export default function HomePage({ route }) {
   const [expenseValue, setExpenseValue] = useState('');
   const [savingsValue, setSavingsValue] = useState('');
   const navigation = useNavigation();
-  
+
+  const currentLoggedInUserId = loggedInUser?.user_id;
 
   const handlePress = (boxNumber) => {
     let jumpValue;
@@ -213,10 +218,14 @@ export default function HomePage({ route }) {
               useNativeDriver: true,
             }),
           ]).start(() => {
-            navigation.navigate('SavingsPage', {username}); //navigation to SavingsPage.js
+              console.log('HomePage - Navigating to SavingsPage with userId:', currentLoggedInUserId)
+              navigation.navigate('SavingsPage', {
+              username: username,
+              loggedInUserId: currentLoggedInUserId,
+            });
           });
         }}
-      >
+          >
         <Animated.Image
           source={require('./assets/savingsIcon.png')}
           style={[
