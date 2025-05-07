@@ -259,16 +259,16 @@ export default function HomePage({ route }) {
           </Animated.View>
         </TouchableWithoutFeedback>
 
+        {/* Expense Box */}
         <TouchableWithoutFeedback onPress={() => {handlePress(2)
           setSelectedBox('Expense')
           setInputValue(expenseValue)
-          setModalVisible(true)
+          setModalVisible(false)
         }}
           >
           <Animated.View
             style={[styles.customBox2, { transform: [{ translateY: jumpValue2 }] }]}
-          >
-            
+          >            
             <Text style={styles.boxText2}>Expenses</Text>
             <Text style={styles.inputDisplay}
             numberOfLines={1}
@@ -277,10 +277,11 @@ export default function HomePage({ route }) {
           </Animated.View>
         </TouchableWithoutFeedback>
 
+        {/* Savings Box */}
         <TouchableWithoutFeedback onPress={() => {handlePress(3)
           setSelectedBox('Savings')
           setInputValue(savingsValue)
-          setModalVisible(true)
+          setModalVisible(false)
         }}>
           <Animated.View
             style={[styles.customBox3, { transform: [{ translateY: jumpValue3 }] }]}
