@@ -20,6 +20,9 @@ export default function SavingsPage() {
 
   const [isGoalSet, setIsGoalSet] = useState(false);
 
+  const remaining = Math.max(parsedGoal - parsedSavings, 0);
+
+  
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -65,10 +68,6 @@ export default function SavingsPage() {
           <Text style={styles.pageTitle}>Savings Goal</Text>
         </View>
 
-        <View style={styles.totalSavingsContainer}>
-          <Text style={styles.totalSavingsText}>Total Savings</Text>
-        </View>
-
         <View style={styles.chartWrapper}>
           <PieChart
             data={pieData}
@@ -83,6 +82,7 @@ export default function SavingsPage() {
             paddingLeft="15"
             hasLegend={false}
           />
+         
         </View>
 
         <View style={styles.customLegend}>
@@ -98,8 +98,20 @@ export default function SavingsPage() {
 
         <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
           <Text style={styles.addButtonText}>+ Add Funds</Text>
+        
         </TouchableOpacity>
 
+        <View style={styles.progressContainer}>
+          {isGoalSet && (
+            <Text style={styles.progressMessage}>
+              Keep going, there is only Php
+            <Text style={{ fontWeight: 'bold' }}> {remaining.toFixed(2)} </Text>
+              left to reach Php
+            <Text style={{ fontWeight: 'bold' }}> {parsedGoal.toFixed(2)}. </Text>
+          </Text>
+          )}
+        </View>
+        
         <Modal
           animationType="slide"
           transparent={true}
@@ -138,6 +150,8 @@ export default function SavingsPage() {
             </View>
           </View>
         </Modal>
+
+
 
         <View style={styles.inputContainer}>
         <View style={styles.rectangle}>
@@ -234,7 +248,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   inputContainer: {
-    marginTop: 30,
+    marginTop: 20,
     paddingHorizontal: 20,
   },
   inputLabel: {
@@ -250,16 +264,8 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     marginBottom: 10,
   },
-  totalSavingsText: {
-    fontSize: 14, 
-    fontWeight: 'bold', 
-    color: '#fff', 
-    marginTop: 50, 
-    marginBottom: -10, 
-    textAlign: 'center', 
-  },
   chartWrapper: {
-    marginTop: 40,
+    marginTop: 20,
     alignItems: 'center',
     justifyContent: 'center',
     left: 73,
@@ -286,7 +292,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   addButton: {
-    marginTop: 20,
+    marginTop: 30,
     backgroundColor: '#00cc99',
     paddingVertical: 12,
     paddingHorizontal: 30,
@@ -422,7 +428,7 @@ const styles = StyleSheet.create({
   },
   modalInputBox2: {
     backgroundColor: '#2c2c3a',
-    color: '#fff',
+    color: '#999',
     width: '100%',
     paddingVertical: 10,
     paddingHorizontal: 15,
@@ -447,6 +453,22 @@ const styles = StyleSheet.create({
   },
   disabledButtonText: {
     color: '#666',
+  },
+  progressContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center', // Centers content horizontally and vertically
+    paddingHorizontal: 20, // 
+    marginTop: 25, // Adds some space above the progress message
+    marginBottom: -20, // Adds some space below the progress message
+  },
+  progressMessage: {
+    textAlign: 'center', // Centers the text
+    fontSize: 16, // Adjust the font size to be mobile-friendly
+    color: '#fff', // Adjust the text color to suit your design
+    maxWidth: '90%', // Ensures the text doesn't overflow the screen
+    padding: 10, // Optional, adds some padding around the text
+    lineHeight: 22, // Optional, for better line
   },
   
 });
