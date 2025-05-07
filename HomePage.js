@@ -111,20 +111,6 @@ export default function HomePage({ route }) {
     ]).start();
   };
 
-  const handleFooterIcon3Press = () => {
-    Animated.sequence([
-      Animated.timing(footerIcon3Jump, {
-        toValue: -10,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-      Animated.timing(footerIcon3Jump, {
-        toValue: 0,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  };
 
   const handleFooterIcon4Press = () => {
     Animated.sequence([
@@ -140,7 +126,7 @@ export default function HomePage({ route }) {
       }),
     ]).start();
   };
-
+  
   const handleFooterIcon5Press = () => {
     Animated.sequence([
       Animated.timing(footerIcon5Jump, {
@@ -177,67 +163,99 @@ export default function HomePage({ route }) {
         </View>
 
         <View style={styles.footer}>
-          {/* List Icon */}
-          <TouchableWithoutFeedback onPress={handleFooterIconPress}>
-           <Animated.View style={{ alignItems: 'center', marginHorizontal: 20 }}>
-            <Animated.Image
-              source={require('./assets/list.png')}
-              style={[
-                styles.footerIcon,
-                { transform: [{ translateY: footerIconJump }] },
-              ]}
-            />
-            <Text style={styles.footerIconText}>List</Text>
-          </Animated.View>
-        </TouchableWithoutFeedback>
           
-          {/* Savings Icon */}
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={{ alignItems: 'center', marginHorizontal: 20 }}
-            onPress={() => {
-              Animated.sequence([
-                Animated.timing(footerIcon2Jump, {
-                  toValue: -10,
-                  duration: 100,
-                  useNativeDriver: true,
+        {/* List Icon */}
+        <TouchableOpacity
+        activeOpacity={0.7}
+        style={{ alignItems: 'center', marginHorizontal: 20 }}
+        onPress={() => {
+          Animated.sequence([
+            Animated.timing(footerIconJump, {
+              toValue: -10,
+              duration: 100,
+              useNativeDriver: true,
+            }),
+            Animated.timing(footerIconJump, {
+              toValue: 0,
+              duration: 100,
+              useNativeDriver: true,
+            }),
+          ]).start(() => {
+            navigation.navigate('ListPage', { username }); // Navigate to ListPage.js
+          });
+        }}
+      >    
+        <Animated.Image
+          source={require('./assets/list.png')}
+          style={[
+            styles.footerIcon,
+            { transform: [{ translateY: footerIconJump }] },
+          ]}
+        />
+        <Text style={styles.footerIconText}>List</Text>
+      </TouchableOpacity>
+
+          
+        {/* Savings Icon */}
+        <TouchableOpacity
+        activeOpacity={0.7}
+        style={{ alignItems: 'center', marginHorizontal: 20 }}
+        onPress={() => {
+          Animated.sequence([
+            Animated.timing(footerIcon2Jump, {
+              toValue: -10,
+              duration: 100,
+              useNativeDriver: true,
+            }),
+            Animated.timing(footerIcon2Jump, {
+              toValue: 0,
+              duration: 100,
+              useNativeDriver: true,
+            }),
+          ]).start(() => {
+            navigation.navigate('SavingsPage', {username}); //navigation to SavingsPage.js
+          });
+        }}
+      >
+        <Animated.Image
+          source={require('./assets/savingsIcon.png')}
+          style={[
+            styles.footerIcon2,
+            { transform: [{ translateY: footerIcon2Jump }] },
+          ]}
+        />
+        <Text style={styles.footerIcon2Text}>Savings</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+      activeOpacity={0.7}
+      style={{ alignItems: 'center', marginHorizontal: 20 }}
+      onPress={() => {
+        Animated.sequence([
+          Animated.timing(footerIcon4Jump, {
+            toValue: -10,
+            duration: 100,
+            useNativeDriver: true,
           }),
-              Animated.timing(footerIcon2Jump, {
-                  toValue: 0,
-                  duration: 100,
-                  useNativeDriver: true,
+          Animated.timing(footerIcon4Jump, {
+            toValue: 0,
+            duration: 100,
+            useNativeDriver: true,
           }),
         ]).start(() => {
-          navigation.navigate('SavingsPage', {username}); //navigation to savingpage
-    });
-    
-  }}
->
-  <Animated.Image
-    source={require('./assets/savingsIcon.png')}
-    style={[
-      styles.footerIcon2,
-      { transform: [{ translateY: footerIcon2Jump }] },
-    ]}
-  />
-  <Text style={styles.footerIcon2Text}>Savings</Text>
-</TouchableOpacity>
-
-     
-
-       {/* Wallet Icon (footerIcon4) */}
-       <TouchableWithoutFeedback onPress={handleFooterIcon4Press}>
-          <Animated.View style={{ alignItems: 'center' }}>
-            <Animated.Image
-              source={require('./assets/walletIcon.png')} // Make sure the image is in the assets folder
-              style={[
-                styles.footerIcon4,
-                { transform: [{ translateY: footerIcon4Jump }] },
-              ]}
-            />
-            <Text style={styles.footerIcon4Text}>Wallet</Text>
-          </Animated.View>
-        </TouchableWithoutFeedback>
+          navigation.navigate('WalletPage', { username }); // navigation to Wallet.js
+        });
+      }}
+    >
+      <Animated.Image
+        source={require('./assets/walletIcon.png')}
+        style={[
+          styles.footerIcon4,
+          { transform: [{ translateY: footerIcon4Jump }] },
+        ]}
+      />
+      <Text style={styles.footerIcon4Text}>Wallet</Text>
+    </TouchableOpacity>
 
        {/* New AI Icon (footerIcon5) */}
        <TouchableWithoutFeedback onPress={handleFooterIcon5Press}>
