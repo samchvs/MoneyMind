@@ -6,6 +6,7 @@ import { createStackNavigator, TransitionPresets } from '@react-navigation/stack
 import LoadingPage from './LoadingPage'; 
 import LoginPage from './LoginPage'; 
 import HomePage from './HomePage';
+import Listpage from './Listpage';
 
 const Stack = createStackNavigator();
 
@@ -41,6 +42,7 @@ export default function App() {
       >
         <Stack.Screen name="LoginPage" component={LoginPage} />
         <Stack.Screen name="HomePage" component={HomePage} />
+        <Stack.Screen name="Listpage" component={Listpage} />
       </Stack.Navigator>
     </NavigationContainer>
   );

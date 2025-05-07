@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-export default function HomePage({ route }) {
+export default function HomePage({ route, navigation }) {
   const username = route?.params?.username;
 
   const [jumpValue1] = useState(new Animated.Value(0));
@@ -76,7 +76,7 @@ export default function HomePage({ route }) {
   };
 
   const handleEnter = () => {
-    // Perform action for entering the value 
+    // Perform action for entering the value
     console.log('Entered value:', inputValue);
     if (selectedBox === 'Income') {
       setIncomeValue(inputValue);
@@ -86,6 +86,10 @@ export default function HomePage({ route }) {
       setSavingsValue(inputValue);
     }
     setModalVisible(false); // Close the modal
+  };
+
+  const handleNavigateToExpenses = () => {
+    navigation.navigate('Listpage');
   };
 
   return (
@@ -112,8 +116,7 @@ export default function HomePage({ route }) {
           setModalVisible(true);
         }}>
           <Animated.View
-            style={[styles.customBox, { transform: [{ translateY: jumpValue1 }] }]}
-          >
+            style={[styles.customBox, { transform: [{ translateY: jumpValue1 }] }]}>
             <Text style={styles.boxText}>Income</Text>
             <Text style={styles.inputDisplay}
             numberOfLines={1}
@@ -122,16 +125,9 @@ export default function HomePage({ route }) {
           </Animated.View>
         </TouchableWithoutFeedback>
 
-        <TouchableWithoutFeedback onPress={() => {handlePress(2)
-          setSelectedBox('Expense')
-          setInputValue(expenseValue)
-          setModalVisible(true)
-        }}
-          >
+        <TouchableWithoutFeedback onPress={() => {handleNavigateToExpenses()}}>
           <Animated.View
-            style={[styles.customBox2, { transform: [{ translateY: jumpValue2 }] }]}
-          >
-            
+            style={[styles.customBox2, { transform: [{ translateY: jumpValue2 }] }]}>
             <Text style={styles.boxText2}>Expenses</Text>
             <Text style={styles.inputDisplay}
             numberOfLines={1}
@@ -146,8 +142,7 @@ export default function HomePage({ route }) {
           setModalVisible(true)
         }}>
           <Animated.View
-            style={[styles.customBox3, { transform: [{ translateY: jumpValue3 }] }]}
-          >
+            style={[styles.customBox3, { transform: [{ translateY: jumpValue3 }] }]}>
             <Text style={styles.boxText3}>Savings</Text>
             <Text style={styles.inputDisplay}
             numberOfLines={1}
@@ -230,12 +225,11 @@ export default function HomePage({ route }) {
   );
 }
 
+
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: { flex: 1 },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -244,29 +238,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 50,
   },
-  title: {
-    fontSize: 15,
-    color: '#aaaaaa',
-    fontWeight: 'bold',
-  },
-  username: {
-    fontSize: 20,
-    color: '#fff',
-    marginTop: -5,
-    fontWeight: 'bold',
-  },
-  icon: {
-    width: 24,
-    height: 24,
-    marginRight: -40,
-    marginTop: 7,
-  },
-  wallet: {
-    fontSize: 35,
-    color: '#fff',
-    fontWeight: 'bold',
-    marginTop: 30,
-  },
+  title: { fontSize: 15, color: '#aaaaaa', fontWeight: 'bold' },
+  username: { fontSize: 20, color: '#fff', marginTop: -5, fontWeight: 'bold' },
+  icon: { width: 24, height: 24, marginRight: -40, marginTop: 7 },
+  wallet: { fontSize: 35, color: '#fff', fontWeight: 'bold', marginTop: 30 },
+  
   customBox: {
     position: 'absolute',
     width: 146,
@@ -278,12 +254,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  boxText: {
-    color: '#3F6FFF',
-    fontSize: 14,
-    fontWeight: 'bold',
-    top: -12,
-  },
+  boxText: { color: '#3F6FFF', fontSize: 14, fontWeight: 'bold', top: -12 },
+  
   customBox2: {
     position: 'absolute',
     width: 146,
@@ -295,12 +267,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  boxText2: {
-    color: '#FF3434',
-    fontSize: 14,
-    fontWeight: 'bold',
-    top: -12,
-  },
+  boxText2: { color: '#FF3434', fontSize: 14, fontWeight: 'bold', top: -12 },
+  
   customBox3: {
     position: 'absolute',
     width: 146,
@@ -312,18 +280,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  boxText3: {
-    color: '#5BFF66',
-    fontSize: 14,
-    fontWeight: 'bold',
-    top: -12,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-  },
+  boxText3: { color: '#5BFF66', fontSize: 14, fontWeight: 'bold', top: -12 },
+  
+  modalContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.7)' },
   modalContent: {
     position: 'absolute',
     width: 330,
@@ -343,16 +302,9 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginBottom: 20,
   },
-  closeButton: {
-    position: 'absolute',
-    top: 15,
-    right: 20,
-  },
-  closeButtonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
+  closeButton: { position: 'absolute', top: 15, right: 20 },
+  closeButtonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
+  
   inputDisplay: {
     fontSize: 24,
     color: '#fff',
@@ -362,12 +314,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginHorizontal: 5,
   },
-  divider: {
-    height: 1,
-    backgroundColor: '#aaa',
-    marginVertical: 5,
-    width: '100%',
-  },
+  
   calcGridContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -378,7 +325,7 @@ const styles = StyleSheet.create({
   numberGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    width: 210, // Adjust based on button size
+    width: 210,
     justifyContent: 'center',
   },
   
@@ -398,10 +345,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   
-  calcButtonText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
+  calcButtonText: { fontSize: 20, fontWeight: 'bold' },
   
   deleteButton: {
     backgroundColor: '#f88',
