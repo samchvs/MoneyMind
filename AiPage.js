@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from 'react-native';
 export default function HelloWorld() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Hello, This is List!</Text>
+      <Text style={styles.text}>Hello, This is Ai!</Text>
     </View>
   );
 }
