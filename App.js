@@ -11,6 +11,7 @@ import SavingsPage from './SavingsPage';
 import ListPage from './ListPage';
 import WalletPage from './WalletPage';
 import AiPage from './AiPage';
+import GenAiPage from './GenAiPage';
 import { SQLiteProvider } from 'expo-sqlite';
 
 const Stack = createStackNavigator();
@@ -55,6 +56,7 @@ export default function App() {
             <Stack.Screen name="ListPage" component={ListPage} />
             <Stack.Screen name="WalletPage" component={WalletPage} />
             <Stack.Screen name="AiPage" component={AiPage} />
+            <Stack.Screen name="GenAiPage" component={GenAiPage} />
           </Stack.Navigator>
         </NavigationContainer>
       )}
