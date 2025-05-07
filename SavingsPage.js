@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, ScrollView, TextInput, TouchableOpacity, Modal } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { PieChart } from 'react-native-chart-kit';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 const { width } = Dimensions.get('window');
 
@@ -13,6 +14,25 @@ export default function SavingsPage() {
   const [modalVisible, setModalVisible] = useState(false);  
   const [modalInput, setModalInput] = useState('');
   
+  const [goalDateModalVisible, setGoalDateModalVisible] = useState(false);
+  const [goalDateInput, setGoalDateInput] = useState('');
+
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date) => {
+    setSelectedDate(date);
+    hideDatePicker();
+  };
+
 
   const pieData = [
     {
@@ -119,22 +139,63 @@ export default function SavingsPage() {
             <Text style={styles.rectangleText1}>
               Saving is so much easier when you have a {'\n'}clear idea of what you're aiming for.
             </Text>   
-              
+            <TouchableOpacity onPress={() => setGoalDateModalVisible(true)}>
+              <Text style={styles.rectangleGoal}>Set Goal</Text>
+            </TouchableOpacity>   
         </View>
           
-          
-          <Text style={styles.inputLabel}>Enter Goal:</Text>   
-          <TextInput
-            style={styles.input}
-            keyboardType="numeric"
-            placeholder="e.g., 1000"
-            placeholderTextColor="#777"
-            value={goal}
-            onChangeText={setGoal}
-          />
-        </View>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={goalDateModalVisible}
+            onRequestClose={() => setGoalDateModalVisible(false)}
+          >
+          <View style={styles.modalOverlay1}>
+            <View style={styles.modalContent1}>
+              <Text style={styles.modalTitle1}>Set Target</Text>
+  
+            {/* Goal Box */}
+            <View style={styles.modalInputBox2}>
+              <TextInput
+                style={styles.modalTextInput2}
+                keyboardType="numeric"
+                placeholder="Enter Target Amount:"
+                placeholderTextColor="#999"
+                value={goal}
+                onChangeText={setGoal}
+              />
+            </View>
 
-      
+            {/* Date Picker Trigger */}
+            <TouchableOpacity onPress={showDatePicker} style={styles.modalInput1}>
+              <Text style={{ color: '#999' }}>
+              {selectedDate ? selectedDate.toDateString() : ' Enter Target Date:'}
+            </Text>
+            </TouchableOpacity>
+
+            {/* Date Picker Modal */}
+            <DateTimePickerModal
+              isVisible={isDatePickerVisible}
+              mode="date"
+              onConfirm={handleConfirm}
+              onCancel={hideDatePicker}
+            />
+
+            <TouchableOpacity
+              style={styles.modalDoneButton1}
+              onPress={() => {
+                // You can store the date in state or do something with it here
+                setGoalDateModalVisible(false);
+              }}
+            >
+ 
+              <Text style={styles.modalDoneText1}>Done</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </View>
+
       </ScrollView>
     </LinearGradient>
   );
@@ -273,7 +334,7 @@ const styles = StyleSheet.create({
   },
   rectangle: {
     width: 350, 
-    height: 80, 
+    height: 100, 
     backgroundColor: '#2E2E2E', 
     borderRadius: 20, 
     marginVertical: 20, 
@@ -300,5 +361,84 @@ const styles = StyleSheet.create({
     width: '100%', 
     overflow: 'hidden', 
   },
+  rectangleGoal: {
+    fontSize: 12,
+    color: '#00cc99',
+    textAlign: 'left',
+    marginHorizontal: 20,
+    marginTop: 5,
+    textDecorationLine: 'underline',
+  },
+  modalOverlay1: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  
+  modalContent1: {
+    backgroundColor: '#1c1c1c',
+    padding: 25,
+    borderRadius: 20,
+    width: '85%',
+    alignItems: 'center',
+  },
+  
+  modalTitle1: {
+    fontSize: 20,
+    color: '#fff',
+    marginBottom: 15,
+    fontWeight: 'bold',
+  },
+  
+  modalInput1: {
+    backgroundColor: '#2c2c3a',
+    color: '#fff',
+    width: '100%',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    borderColor: '#555',
+    borderWidth: 1,
+    marginBottom: 20,
+  },
+  
+  modalDoneButton1: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+  },
+  
+  modalDoneText1: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  modalInputBox2: {
+    backgroundColor: '#2c2c3a',
+    color: '#fff',
+    width: '100%',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    borderColor: '#555',
+    borderWidth: 1,
+    marginBottom: 20,
+  },
+  
+  modalInputLabel2: {
+    color: '#aaa',
+    marginBottom: 4,
+    fontSize: 12,
+  },
+  
+  modalTextInput2: {
+    color: '#fff',
+    fontSize: 14,
+    borderBottomColor: '#444',
+    paddingVertical: 4,
+  },
+  
   
 });
