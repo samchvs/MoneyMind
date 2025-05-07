@@ -227,6 +227,7 @@ export default function HomePage({ route }) {
         <Text style={styles.footerIcon2Text}>Savings</Text>
       </TouchableOpacity>
 
+      {/* Wallet Icon */}
       <TouchableOpacity
       activeOpacity={0.7}
       style={{ alignItems: 'center', marginHorizontal: 20 }}
@@ -257,21 +258,39 @@ export default function HomePage({ route }) {
       <Text style={styles.footerIcon4Text}>Wallet</Text>
     </TouchableOpacity>
 
-       {/* New AI Icon (footerIcon5) */}
-       <TouchableWithoutFeedback onPress={handleFooterIcon5Press}>
-          <Animated.View style={{ alignItems: 'center' }}>
-            <Animated.Image
-              source={require('./assets/AiIcon.png')} // Make sure the image is in the assets folder
-              style={[
-                styles.footerIcon5,
-                { transform: [{ translateY: footerIcon5Jump }] },
-              ]}
-            />
-            <Text style={styles.footerIcon5Text}>AI</Text>
-          </Animated.View>
-        </TouchableWithoutFeedback>
-        </View>
+      {/* AI Icon */}
+      <TouchableOpacity
+      activeOpacity={0.7}
+      style={{ alignItems: 'center', marginHorizontal: 20 }}
+      onPress={() => {
+        Animated.sequence([
+          Animated.timing(footerIcon5Jump, {
+            toValue: -10,
+            duration: 100,
+            useNativeDriver: true,
+          }),
+          Animated.timing(footerIcon5Jump, {
+            toValue: 0,
+            duration: 100,
+            useNativeDriver: true,
+          }),
+        ]).start(() => {
+          navigation.navigate('AiPage', { username }); // Navigate to AI page
+        });
+      }}
+    >
+      <Animated.Image
+        source={require('./assets/AiIcon.png')}
+        style={[
+          styles.footerIcon5,
+          { transform: [{ translateY: footerIcon5Jump }] },
+        ]}
+      />
+      <Text style={styles.footerIcon5Text}>AI</Text>
+    </TouchableOpacity>
 
+
+        </View>
         <TouchableWithoutFeedback onPress={() => {handlePress(1)
           setSelectedBox('Income')
           setInputValue(incomeValue)
