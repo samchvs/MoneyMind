@@ -23,7 +23,6 @@ export default function HomePage({ route }) {
   const [jumpValue3] = useState(new Animated.Value(0));
   const [footerIconJump] = useState(new Animated.Value(0));
   const [footerIcon2Jump] = useState(new Animated.Value(0));
-  const [footerIcon3Jump] = useState(new Animated.Value(0));
   const [footerIcon4Jump] = useState(new Animated.Value(0));
   const [footerIcon5Jump] = useState(new Animated.Value(0));
   const [modalVisible, setModalVisible] = useState(false);
@@ -81,11 +80,10 @@ export default function HomePage({ route }) {
   };
 
   const handleDelete = () => {
-    setInputValue(inputValue.slice(0, -1)); //delete last number
+    setInputValue(inputValue.slice(0, -1)); 
   };
 
   const handleEnter = () => {
-    // Perform action for entering the value 
     console.log('Entered value:', inputValue);
     if (selectedBox === 'Income') {
       setIncomeValue(inputValue);
@@ -94,11 +92,10 @@ export default function HomePage({ route }) {
     } else if (selectedBox === 'Savings') {
       setSavingsValue(inputValue);
     }
-    setModalVisible(false); // Close the modal
+    setModalVisible(false); 
   };
   
   return (
-    
     <LinearGradient
       colors={['#000000', '#171717', '#232323', '#3b3b3b', '#4f4f4f']}
       style={styles.container}
@@ -147,7 +144,7 @@ export default function HomePage({ route }) {
             { transform: [{ translateY: footerIconJump }] },
           ]}
         />
-        <Text style={styles.footerIconText}>List</Text>
+        <Text style={styles.footerIconText}>List</Text> 
       </TouchableOpacity>
 
           
