@@ -200,7 +200,7 @@ export default function SavingsPage() {
                 styles.modalDoneText1,
                 isGoalSet && styles.disabledButtonText
               ]}>
-                {isGoalSet ? 'Goal Set' : 'Done'}
+                {isGoalSet ? 'Goal Set' : 'Set Savings Target'}
               </Text>
             </TouchableOpacity>
           </View>
