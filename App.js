@@ -13,6 +13,7 @@ import WalletPage from './WalletPage';
 import AiPage from './AiPage';
 import GenAiPage from './GenAiPage';
 import { SQLiteProvider } from 'expo-sqlite';
+import { UserProvider } from './UserContext';
 
 const Stack = createStackNavigator();
 
@@ -34,6 +35,7 @@ export default function App() {
 
   return (
     <SQLiteProvider databaseName="db.db">
+    <UserProvider>
       {!showLogin ? (
         <LinearGradient colors={['#000000', '#171717', '#232323']} style={styles.gradientContainer}>
           <Animated.View style={[styles.fullscreen, { opacity: loadingOpacity }]}>
@@ -60,6 +62,7 @@ export default function App() {
           </Stack.Navigator>
         </NavigationContainer>
       )}
+      </UserProvider>
     </SQLiteProvider>
   );
 }
