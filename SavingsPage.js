@@ -61,6 +61,14 @@ export default function SavingsPage() {
     },
   ];
 
+  const formattedDate = selectedDate
+  ? selectedDate.toLocaleDateString('en-PH', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+  : '';
+
   return (
     <LinearGradient colors={['#000000', '#171717', '#232323', '#3b3b3b', '#4f4f4f']} style={styles.gradientContainer}>
       <ScrollView contentContainerStyle={styles.container}>
@@ -102,16 +110,23 @@ export default function SavingsPage() {
         </TouchableOpacity>
 
         <View style={styles.progressContainer}>
-          {isGoalSet && (
-            <Text style={styles.progressMessage}>
-              Keep going, there is only Php
-            <Text style={{ fontWeight: 'bold' }}> {remaining.toFixed(2)} </Text>
-              left to reach Php
-            <Text style={{ fontWeight: 'bold' }}> {parsedGoal.toFixed(2)}. </Text>
-          </Text>
-          )}
-        </View>
-        
+          {isGoalSet && selectedDate && (
+            parsedSavings >= parsedGoal ? (
+              <Text style={styles.progressMessage}>
+                  🎉 Congratulations! {'\n'}You reached your Goal 🤑
+              </Text>
+              ) : (
+                <Text style={styles.progressMessage}>
+                  Keep going, there is only Php
+                  <Text style={{ fontWeight: 'bold' }}> {remaining.toFixed(2)} </Text>
+                    left to reach Php
+                    <Text style={{ fontWeight: 'bold' }}> {parsedGoal.toFixed(2)} </Text>
+                      by
+                    <Text style={{ fontWeight: 'bold' }}> {formattedDate}.</Text>
+                  </Text>
+                ) 
+            )}    
+    </View>
         <Modal
           animationType="slide"
           transparent={true}
