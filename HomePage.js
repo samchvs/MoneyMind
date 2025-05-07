@@ -96,52 +96,7 @@ export default function HomePage({ route }) {
     }
     setModalVisible(false); // Close the modal
   };
-  const handleFooterIconPress = () => {
-    Animated.sequence([
-      Animated.timing(footerIconJump, {
-        toValue: -10,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-      Animated.timing(footerIconJump, {
-        toValue: 0,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  };
-
-
-  const handleFooterIcon4Press = () => {
-    Animated.sequence([
-      Animated.timing(footerIcon4Jump, {
-        toValue: -10,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-      Animated.timing(footerIcon4Jump, {
-        toValue: 0,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  };
   
-  const handleFooterIcon5Press = () => {
-    Animated.sequence([
-      Animated.timing(footerIcon5Jump, {
-        toValue: -10,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-      Animated.timing(footerIcon5Jump, {
-        toValue: 0,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  };
-
   return (
     
     <LinearGradient
