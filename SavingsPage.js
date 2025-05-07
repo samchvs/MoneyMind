@@ -1,3 +1,4 @@
+//DONE WITH DB
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, ScrollView, TextInput, TouchableOpacity, Modal, Alert } from 'react-native'; // Import Alert
 import { LinearGradient } from 'expo-linear-gradient';
