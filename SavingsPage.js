@@ -188,21 +188,21 @@ export default function SavingsPage() {
               onCancel={hideDatePicker}
             />
 
-<TouchableOpacity
-  style={[
-    styles.modalDoneButton1,
-    isGoalSet && styles.disabledButton  
-  ]}
-  onPress={handleGoalDone}
-  disabled={isGoalSet}
->
-  <Text style={[
-    styles.modalDoneText1,
-    isGoalSet && styles.disabledButtonText
-  ]}>
-    {isGoalSet ? 'Goal Set' : 'Done'}
-  </Text>
-</TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.modalDoneButton1,
+                isGoalSet && styles.disabledButton  
+              ]}
+              onPress={handleGoalDone}
+              disabled={isGoalSet}
+            >
+              <Text style={[
+                styles.modalDoneText1,
+                isGoalSet && styles.disabledButtonText
+              ]}>
+                {isGoalSet ? 'Goal Set' : 'Done'}
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
