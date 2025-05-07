@@ -13,12 +13,12 @@ export default function SavingsPage() {
   const parsedGoal = parseFloat(goal) || 1; 
   const [modalVisible, setModalVisible] = useState(false);  
   const [modalInput, setModalInput] = useState('');
-  
   const [goalDateModalVisible, setGoalDateModalVisible] = useState(false);
-  const [goalDateInput, setGoalDateInput] = useState('');
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
+
+  const [isGoalSet, setIsGoalSet] = useState(false);
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -31,6 +31,13 @@ export default function SavingsPage() {
   const handleConfirm = (date) => {
     setSelectedDate(date);
     hideDatePicker();
+  };
+
+  const handleGoalDone = () => {
+    if (goal && selectedDate) {
+      setIsGoalSet(true);  
+      setGoalDateModalVisible(false);  
+    }
   };
 
 
@@ -133,7 +140,6 @@ export default function SavingsPage() {
         </Modal>
 
         <View style={styles.inputContainer}>
-          
         <View style={styles.rectangle}>
           <Text style={styles.rectangleText}>You should set a target 🎯</Text>
             <Text style={styles.rectangleText1}>
@@ -163,14 +169,15 @@ export default function SavingsPage() {
                 placeholderTextColor="#999"
                 value={goal}
                 onChangeText={setGoal}
+                editable={!isGoalSet}
               />
             </View>
 
             {/* Date Picker Trigger */}
-            <TouchableOpacity onPress={showDatePicker} style={styles.modalInput1}>
+            <TouchableOpacity onPress={showDatePicker} style={styles.modalInput1} disabled={isGoalSet}>
               <Text style={{ color: '#999' }}>
-              {selectedDate ? selectedDate.toDateString() : ' Enter Target Date:'}
-            </Text>
+                {selectedDate ? selectedDate.toDateString() : ' Enter Target Date:'}
+              </Text>
             </TouchableOpacity>
 
             {/* Date Picker Modal */}
@@ -181,16 +188,21 @@ export default function SavingsPage() {
               onCancel={hideDatePicker}
             />
 
-            <TouchableOpacity
-              style={styles.modalDoneButton1}
-              onPress={() => {
-                // You can store the date in state or do something with it here
-                setGoalDateModalVisible(false);
-              }}
-            >
- 
-              <Text style={styles.modalDoneText1}>Done</Text>
-            </TouchableOpacity>
+<TouchableOpacity
+  style={[
+    styles.modalDoneButton1,
+    isGoalSet && styles.disabledButton  
+  ]}
+  onPress={handleGoalDone}
+  disabled={isGoalSet}
+>
+  <Text style={[
+    styles.modalDoneText1,
+    isGoalSet && styles.disabledButtonText
+  ]}>
+    {isGoalSet ? 'Goal Set' : 'Done'}
+  </Text>
+</TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -286,13 +298,11 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  
   addButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },
-
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
@@ -375,7 +385,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  
   modalContent1: {
     backgroundColor: '#1c1c1c',
     padding: 25,
@@ -383,14 +392,12 @@ const styles = StyleSheet.create({
     width: '85%',
     alignItems: 'center',
   },
-  
   modalTitle1: {
     fontSize: 20,
     color: '#fff',
     marginBottom: 15,
     fontWeight: 'bold',
   },
-  
   modalInput1: {
     backgroundColor: '#2c2c3a',
     color: '#fff',
@@ -402,18 +409,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 20,
   },
-  
   modalDoneButton1: {
     backgroundColor: '#4CAF50',
     paddingVertical: 10,
     paddingHorizontal: 30,
     borderRadius: 10,
   },
-  
   modalDoneText1: {
-    color: '#fff',
+    color: 'white',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
   modalInputBox2: {
     backgroundColor: '#2c2c3a',
@@ -426,19 +431,22 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 20,
   },
-  
   modalInputLabel2: {
     color: '#aaa',
     marginBottom: 4,
     fontSize: 12,
   },
-  
   modalTextInput2: {
     color: '#fff',
     fontSize: 14,
     borderBottomColor: '#444',
     paddingVertical: 4,
   },
-  
+  disabledButton: {
+    backgroundColor: '#ccc',  
+  },
+  disabledButtonText: {
+    color: '#666',
+  },
   
 });
