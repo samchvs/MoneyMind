@@ -66,6 +66,7 @@ export default function HomePage({ route }) {
     fetchLatestSavings();
   }, [db, loggedInUserId]); // Re-fetch if db or userId changes
 
+  
 
   const handlePress = (boxNumber) => {
     let jumpValue;
@@ -258,7 +259,9 @@ export default function HomePage({ route }) {
             useNativeDriver: true,
           }),
         ]).start(() => {
-          navigation.navigate('WalletPage', { username }); // navigation to Wallet.js
+          navigation.navigate('WalletPage', {
+            income: incomeValue, // replace with the actual income state/variable
+          });
         });
       }}
     >
