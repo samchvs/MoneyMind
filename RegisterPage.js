@@ -28,6 +28,33 @@ import React, { useState, useEffect, useRef } from 'react';
          amount REAL NOT NULL,
          FOREIGN KEY (savings_goal_id) REFERENCES savings_goals(id) ON DELETE CASCADE
        );
+
+       CREATE TABLE IF NOT EXISTS expenses (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id INTEGER NOT NULL,
+          amount REAL NOT NULL,
+          category TEXT NOT NULL CHECK (
+            category IN (
+              'Bills',
+              'Food',
+              'Entertainment',
+              'Transportation',
+              'Personal Spending',
+              'Savings',
+              'Healthcare'
+            )
+          ),
+          date TEXT NOT NULL,
+          FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+        );
+
+        CREATE TABLE IF NOT EXISTS income (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id INTEGER NOT NULL,
+          amount REAL NOT NULL,
+          date TEXT NOT NULL, 
+          FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+        );
      `);
      console.log('Database tables initialized successfully');
    } catch (error) {
