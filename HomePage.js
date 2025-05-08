@@ -212,7 +212,7 @@ export default function HomePage({ route }) {
         <Text style={styles.footerIcon2Text}>Savings</Text>
       </TouchableOpacity>
 
-      {/* Home icon */}
+      {/* Home iconn */}
       <TouchableOpacity
             activeOpacity={0.7}
             style={{ alignItems: 'center', marginHorizontal: 20 }}
