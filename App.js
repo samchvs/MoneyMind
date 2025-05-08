@@ -12,6 +12,7 @@ import ListPage from './ListPage';
 import WalletPage from './WalletPage';
 import AiPage from './AiPage';
 import GenAiPage from './GenAiPage';
+
 import { SQLiteProvider } from 'expo-sqlite';
 import { UserProvider } from './UserContext';
 
@@ -53,12 +54,14 @@ export default function App() {
           >
             <Stack.Screen name="LoginPage" component={LoginPage} />
             <Stack.Screen name="RegisterPage" component={RegisterPage} />
-            <Stack.Screen name="HomePage" component={HomePage} />
             <Stack.Screen name="SavingsPage" component={SavingsPage} />
             <Stack.Screen name="ListPage" component={ListPage} />
-            <Stack.Screen name="WalletPage" component={WalletPage} />
             <Stack.Screen name="AiPage" component={AiPage} />
             <Stack.Screen name="GenAiPage" component={GenAiPage} />
+            <Stack.Screen name="HomePage" component={HomePage} />
+            <Stack.Screen name="WalletPage" component={WalletPage} />
+           
+ 
           </Stack.Navigator>
         </NavigationContainer>
       )}

@@ -1,27 +1,13 @@
-import React from 'react'; 
+import React, {useEffect} from 'react'; 
 import { View, Text, StyleSheet, Image,TouchableOpacity, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+
 
 const handleFilterPress = () => {
   // Add your filter logic here
   console.log('Filter pressed!');
 };
 
-useEffect(() => {
-  if (loggedInUser) {
-    db.transaction(tx => {
-      tx.executeSql(
-        'SELECT income FROM income_table WHERE username = ?;',
-        [loggedInUser],
-        (_, { rows }) => {
-          if (rows.length > 0) {
-            setIncome(rows.item(0).income);
-          }
-        }
-      );
-    });
-  }
-}, [loggedInUser]);
 
 export default function WalletPage({ route }) {
   const { income } = route.params || {};

@@ -1,98 +1,109 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, TextInput, Text, Image, Animated, TouchableOpacity, Vibration, Alert, Pressable } from 'react-native';  
+import { StyleSheet, TextInput, Text, Image, Animated, TouchableOpacity, Vibration, Alert, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { SQLiteProvider, useSQLiteContext } from 'expo-sqlite';
+import { useSQLiteContext } from 'expo-sqlite';
 import { InitializeDatabase } from './RegisterPage';
-
+import { useUser } from './UserContext';
 
 export default function LoginPage({ navigation }) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState(''); 
-  const logoMoveUp = useRef(new Animated.Value(0)).current;      
-  const moneyMindMoveUp = useRef(new Animated.Value(0)).current;  
-  const inputOpacity = useRef(new Animated.Value(0)).current;     
-  const buttonOpacity = useRef(new Animated.Value(0)).current;   
-  const buttonMoveUp = useRef(new Animated.Value(100)).current;   
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const { loggedInUser, setLoggedInUser } = useUser(); 
+    const [error, setError] = useState('');
+    const logoMoveUp = useRef(new Animated.Value(0)).current;
+    const moneyMindMoveUp = useRef(new Animated.Value(0)).current;
+    const inputOpacity = useRef(new Animated.Value(0)).current;
+    const buttonOpacity = useRef(new Animated.Value(0)).current;
+    const buttonMoveUp = useRef(new Animated.Value(100)).current;
+    const [dbReady, setDbReady] = useState(false);
 
-  useEffect(() => {
-    InitializeDatabase(db); 
-    Animated.parallel([
-      Animated.spring(logoMoveUp, {
-        toValue: -100,
-        friction: 20, 
-        tension: 30, 
-        useNativeDriver: true,
-      }),
-      Animated.spring(moneyMindMoveUp, {
-        toValue: -100,
-        friction: 10,
-        tension: 50,
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
-      Animated.timing(inputOpacity, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver: true,
-      }).start(() => {
-        Animated.parallel([ 
-          Animated.timing(buttonOpacity, {
-            toValue: 1,
-            duration: 500,
-            useNativeDriver: true,
-          }),
-          Animated.spring(buttonMoveUp, {
-            toValue: 0,
-            friction: 6,
-            tension: 50,
-            useNativeDriver: true,
-          }),
-        ]).start();
-      });
-    });
-  }, []);
+    const db = useSQLiteContext();
 
-  const db = useSQLiteContext();
+    useEffect(() => {
+        const initialize = async () => {
+            if (db) {
+                await InitializeDatabase(db);
+                setDbReady(true);
+            }
+            Animated.parallel([
+                Animated.spring(logoMoveUp, {
+                    toValue: -100,
+                    friction: 20,
+                    tension: 30,
+                    useNativeDriver: true,
+                }),
+                Animated.spring(moneyMindMoveUp, {
+                    toValue: -100,
+                    friction: 10,
+                    tension: 50,
+                    useNativeDriver: true,
+                }),
+            ]).start(() => {
+                Animated.timing(inputOpacity, {
+                    toValue: 1,
+                    duration: 500,
+                    useNativeDriver: true,
+                }).start(() => {
+                    Animated.parallel([
+                        Animated.timing(buttonOpacity, {
+                            toValue: 1,
+                            duration: 500,
+                            useNativeDriver: true,
+                        }),
+                        Animated.spring(buttonMoveUp, {
+                            toValue: 0,
+                            friction: 6,
+                            tension: 50,
+                            useNativeDriver: true,
+                        }),
+                    ]).start();
+                });
+            });
+        };
 
-  const handleLogin = async () => {
-    if (!username || !password || username.trim() === '' || password.trim() === '') {
-      setError('Please enter both username and password.');
-      Vibration.vibrate(); 
-      return;
-    }
-  
-    try {
-      const existingUser = await db.getFirstAsync(
-        'SELECT * FROM users WHERE username = ?',
-        [username]
-      );
-  
-      if (!existingUser) {
-        setError('Username does not exist');
-        Vibration.vibrate(); 
-        return;
-      }
-  
-      const validUser = await db.getFirstAsync('SELECT * FROM users WHERE username = ? and password = ?', 
-        [username, password]
-      );
-  
-      if (validUser) {
-        console.log('Navigating with username:', username);
-        navigation.navigate('HomePage', { username: username });
-      } else {
-        setError('Invalid Password');
-        Vibration.vibrate(); 
-        return;
-      }
-    } catch (error) {
-      console.log('Error during login: ', error);
-    }
-  };
-  
+        initialize();
+    }, [db]);
 
+    const handleLogin = async () => {
+        if (!dbReady) {
+            setError('Database is not ready. Please try again later.');
+            return;
+        }
+
+        if (!username || !password || username.trim() === '' || password.trim() === '') {
+            setError('Please enter both username and password.');
+            Vibration.vibrate();
+            return;
+        }
+
+        try {
+            const validUser = await db.getFirstAsync(
+                'SELECT * FROM users WHERE username = ? and password = ?',
+                [username, password]
+            );
+
+            if (validUser) {
+                const userData = { user_id: validUser.user_id, username: validUser.username };
+                setLoggedInUser(userData);
+                console.log('LoginPage - User set in context:', userData);
+            } else {
+                setError('Invalid username or password.');
+                Vibration.vibrate();
+            }
+        } catch (err) {
+            console.error('Login failed:', err);
+            setError('Login failed. Please try again.');
+        }
+    };
+
+    useEffect(() => {
+        if (loggedInUser) {
+            console.log('LoginPage - Navigating to HomePage');
+            navigation.navigate('HomePage', { username: loggedInUser.username });
+        }
+    }, [loggedInUser, navigation]);
+  
   return (
     <LinearGradient
       colors={['#000000', '#171717', '#171717', '#232323', '#3b3b3b', '#3b3b3b', '#4f4f4f']}
