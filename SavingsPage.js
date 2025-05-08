@@ -1,4 +1,3 @@
-//DONE WITH DB
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, ScrollView, TextInput, TouchableOpacity, Modal, Alert } from 'react-native'; // Import Alert
 import { LinearGradient } from 'expo-linear-gradient';
@@ -226,6 +225,7 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
     );
   };
 
+
   const pieData = [
     {
       name: 'Saved',
@@ -237,7 +237,7 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
     {
       name: 'Remaining',
       amount: remaining, // Use the calculated remaining
-      color: '#fff', // Darker color for remaining
+      color: '#444', // Darker color for remaining
       legendFontColor: '#fff', // Make legend text visible
       legendFontSize: 14,
     },
@@ -256,7 +256,7 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
         {
            name: 'Remaining',
            amount: 1, // Represent as a full circle if goal is 0 or less
-           color: '#fff',
+           color: '#444',
            legendFontColor: '#fff',
            legendFontSize: 14,
         },
@@ -356,29 +356,22 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
             <View key={index} style={styles.legendItem}>
               <View style={[styles.legendColor, { backgroundColor: item.color }]} />
               <Text style={styles.legendText}>
-                {item.name}: Php {item.amount.toFixed(2)}
+                {item.name}
               </Text>
             </View>
           ))}
         </View>
 
-        {remaining > 0 && ( // Conditionally render the "Add Funds" button
-   <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
-    <Text style={styles.addButtonText}>+ Add Funds</Text>
-   </TouchableOpacity>
-  )}
+        <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
+          <Text style={styles.addButtonText}>+ Add Funds</Text>
+        </TouchableOpacity>
 
         <View style={styles.progressContainer}>
           {isGoalSet && selectedDate && (
             parsedSavings >= parsedGoal ? (
-              <View>
-              <Text style={styles.congratulations}> {/* Style for the emoji and "Congratulations!" */}
-               🎉 Congratulations!
+              <Text style={styles.progressMessage}>
+                🎉 Congratulations! {'\n'}You reached your Goal 🤑
               </Text>
-              <Text style={styles.progressMessage}> {/* Style for "You reached your Goal 🤑" */}
-               You reached your Goal 🤑
-              </Text>
-             </View>
             ) : (
               <Text style={styles.progressMessage}>
                 Keep going, there is only Php
@@ -506,18 +499,12 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
                        </Text>
                    </TouchableOpacity>
                )}
+
+
             </View>
           </View>
         </Modal>
 
-
-       
-        {/* Show New Goal Button only if the goal is met */}
-        {isGoalSet && parsedSavings >= parsedGoal && (
-          <TouchableOpacity style={styles.newGoalButton} onPress={handleStartNewGoal}>
-            <Text style={styles.newGoalButtonText}>Start a New Goal</Text>
-          </TouchableOpacity>
-        )}
 
         <View style={styles.quoteContainer}>
           <Text style={styles.quoteText}>
@@ -525,6 +512,12 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
           </Text>
         </View>
 
+        {/* Show New Goal Button only if the goal is met */}
+        {isGoalSet && parsedSavings >= parsedGoal && (
+          <TouchableOpacity style={styles.newGoalButton} onPress={handleStartNewGoal}>
+            <Text style={styles.newGoalButtonText}>Start a New Goal</Text>
+          </TouchableOpacity>
+        )}
 
       </ScrollView>
     </LinearGradient>
@@ -532,73 +525,70 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
 }
 
 const styles = StyleSheet.create({
-  gradientContainer: {
+ gradientContainer: {
    flex: 1,
-  },
-  container: {
-   flexGrow: 1, // Changed from just 'paddingBottom' to allow content to grow
+ },
+ container: {
    paddingBottom: 30,
-   justifyContent: 'space-between', // Distribute space between children
-  },
-  header: {
+ },
+ header: {
    flexDirection: 'column',
    alignItems: 'flex-start',
    justifyContent: 'flex-start',
    width: '100%',
    paddingHorizontal: 20,
    paddingTop: 40,
-   marginBottom: 20, // Added some margin below the header for spacing
-  },
-  pageTitle: {
+ },
+ pageTitle: {
    fontSize: 35,
    color: '#fff',
    fontWeight: 'bold',
-  },
-  inputContainer: {
+ },
+ inputContainer: {
    marginTop: 20,
    paddingHorizontal: 20,
-  },
-  inputLabel: {
+ },
+ inputLabel: {
    color: '#ccc',
    fontSize: 16,
    marginTop: 10,
-  },
-  input: {
+ },
+ input: {
    borderBottomWidth: 1,
    borderBottomColor: '#666',
    color: '#fff',
    fontSize: 16,
    paddingVertical: 5,
    marginBottom: 10,
-  },
-  chartWrapper: {
+ },
+ chartWrapper: {
    marginTop: 10,
    alignItems: 'center',
    justifyContent: 'center',
    left: 73,
-  },
-  customLegend: {
-   flexDirection: 'row',
-   justifyContent: 'space-around',
+ },
+ customLegend: {
+   flexDirection: 'row', 
+   justifyContent: 'space-around', 
    marginTop: 20,
    paddingHorizontal: 20,
-  },
-  legendItem: {
+ },
+ legendItem: {
    flexDirection: 'row',
    alignItems: 'center',
    marginBottom: 5,
-  },
-  legendColor: {
+ },
+ legendColor: {
    width: 12,
    height: 12,
    marginRight: 8,
    borderRadius: 6,
-  },
-  legendText: {
+ },
+ legendText: {
    color: '#fff',
    fontSize: 14,
-  },
-  addButton: {
+ },
+ addButton: {
    marginTop: 20,
    backgroundColor: '#00cc99',
    paddingVertical: 12,
@@ -610,32 +600,32 @@ const styles = StyleSheet.create({
    shadowOpacity: 0.3,
    shadowRadius: 4,
    elevation: 5,
-  },
-  addButtonText: {
+ },
+ addButtonText: {
    color: '#fff',
    fontSize: 16,
    fontWeight: 'bold',
-  },
-  modalOverlay: {
+ },
+ modalOverlay: {
    flex: 1,
    backgroundColor: 'rgba(0, 0, 0, 0.6)',
    justifyContent: 'center',
    alignItems: 'center',
-  },
-  modalContent: {
+ },
+ modalContent: {
    width: '80%',
    backgroundColor: '#1c1c1c',
    padding: 20,
    borderRadius: 10,
    alignItems: 'center',
-  },
-  modalTitle: {
+ },
+ modalTitle: {
    fontSize: 20,
    color: '#fff',
    marginBottom: 15,
    fontWeight: 'bold',
-  },
-  modalInput: {
+ },
+ modalInput: {
    width: '100%',
    borderBottomWidth: 1,
    borderBottomColor: '#00cc99',
@@ -643,75 +633,75 @@ const styles = StyleSheet.create({
    fontSize: 16,
    marginBottom: 20,
    paddingVertical: 5,
-  },
-  modalDoneButton: {
+ },
+ modalDoneButton: {
    backgroundColor: '#00cc99',
    paddingVertical: 10,
    paddingHorizontal: 25,
    borderRadius: 20,
    marginTop: 10,
-  },
-  modalDoneText: {
+ },
+ modalDoneText: {
    color: '#fff',
    fontWeight: 'bold',
-  },
-  rectangle: {
-   width: 350,
-   height: 100,
-   backgroundColor: '#2E2E2E',
-   borderRadius: 20,
-   marginVertical: 20,
-   alignSelf: 'center',
-  },
-  rectangleText: {
-   fontSize: 13,
-   fontWeight: 'bold',
-   color: '#fff',
-   textAlign: 'left',
-   marginHorizontal: 20,
-   marginTop: -25,
-   lineHeight: 100,
+ },
+ rectangle: {
+   width: 350, 
+   height: 100, 
+   backgroundColor: '#2E2E2E', 
+   borderRadius: 20, 
+   marginVertical: 20, 
+   alignSelf: 'center', 
+ },
+ rectangleText: {
+   fontSize: 13, 
+   fontWeight: 'bold', 
+   color: '#fff', 
+   textAlign: 'left', 
+   marginHorizontal: 20, 
+   marginTop: -25, 
+   lineHeight: 100, 
    overflow: 'hidden',
-   width: '100%',
-  },
-  rectangleText1: {
+   width: '100%', 
+ },
+ rectangleText1: {
    fontSize: 12,
    color: '#fff',
    textAlign: 'left',
    marginTop: -40,
    marginHorizontal: 20,
-   flexWrap: 'wrap',
-   width: '100%',
-   overflow: 'hidden',
-  },
-  rectangleGoal: {
+   flexWrap: 'wrap', 
+   width: '100%', 
+   overflow: 'hidden', 
+ },
+ rectangleGoal: {
    fontSize: 12,
    color: '#00cc99',
    textAlign: 'left',
    marginHorizontal: 20,
    marginTop: 5,
    textDecorationLine: 'underline',
-  },
-  modalOverlay1: {
+ },
+ modalOverlay1: {
    flex: 1,
    backgroundColor: 'rgba(0, 0, 0, 0.7)',
    justifyContent: 'center',
    alignItems: 'center',
-  },
-  modalContent1: {
+ },
+ modalContent1: {
    backgroundColor: '#1c1c1c',
    padding: 25,
    borderRadius: 20,
    width: '85%',
    alignItems: 'center',
-  },
-  modalTitle1: {
+ },
+ modalTitle1: {
    fontSize: 20,
    color: '#fff',
    marginBottom: 15,
    fontWeight: 'bold',
-  },
-  modalInput1: {
+ },
+ modalInput1: {
    backgroundColor: '#2c2c3a',
    color: '#fff',
    width: '100%',
@@ -721,19 +711,19 @@ const styles = StyleSheet.create({
    borderColor: '#555',
    borderWidth: 1,
    marginBottom: 20,
-  },
-  modalDoneButton1: {
+ },
+ modalDoneButton1: {
    backgroundColor: '#00cc99',
    paddingVertical: 10,
    paddingHorizontal: 30,
    borderRadius: 10,
-  },
-  modalDoneText1: {
+ },
+ modalDoneText1: {
    color: 'white',
    fontSize: 16,
    fontWeight: 'bold',
-  },
-  modalInputBox2: {
+ },
+ modalInputBox2: {
    backgroundColor: '#2c2c3a',
    color: '#999',
    width: '100%',
@@ -743,73 +733,65 @@ const styles = StyleSheet.create({
    borderColor: '#555',
    borderWidth: 1,
    marginBottom: 20,
-  },
-  modalInputLabel2: {
+ },
+ modalInputLabel2: {
    color: '#aaa',
    marginBottom: 4,
    fontSize: 12,
-  },
-  modalTextInput2: {
+ },
+ modalTextInput2: {
    color: '#fff',
    fontSize: 14,
    borderBottomColor: '#444',
    paddingVertical: 4,
-  },
-  disabledButton: {
-   backgroundColor: '#ccc',
-  },
-  disabledButtonText: {
+ },
+ disabledButton: {
+   backgroundColor: '#ccc',  
+ },
+ disabledButtonText: {
    color: '#666',
-  },
-  progressContainer: {
+ },
+ progressContainer: {
+   flex: 1,
    justifyContent: 'center',
-   alignItems: 'center',
+   alignItems: 'center', 
+   paddingHorizontal: 20, 
+   marginTop: 25, 
+   marginBottom: -20, 
+ },
+ progressMessage: {
+   textAlign: 'center', 
+   fontSize: 16, 
+   color: '#fff', 
+   maxWidth: '90%', 
+   padding: 10, 
+   lineHeight: 22, 
+ },
+ quoteContainer: {
+   marginTop: 10,
    paddingHorizontal: 20,
-   marginTop: 25,
-   marginBottom: 20, // Added some margin below the progress message
-  },
-  progressMessage: {
-   textAlign: 'center',
-   fontSize: 16,
-   color: '#fff',
-   maxWidth: '90%',
-   padding: 10,
-   lineHeight: 22,
-  },
-  quoteContainer: {
-   paddingHorizontal: 20,
    alignItems: 'center',
-   marginBottom: 20, // Add some margin at the bottom for better spacing
-  },
-  quoteText: {
+ },
+ quoteText: {
    fontSize: 14,
    fontStyle: 'italic',
    color: '#ccc',
    textAlign: 'center',
-   marginTop: 4,
-  },
-  newGoalButton: {
+ },
+ newGoalButton: {
    backgroundColor: '#00cc99',
    paddingVertical: 12,
    paddingHorizontal: 10,
    borderRadius: 10,
    alignItems: 'center',
-   marginTop: 40, // Adjusted marginTop
-   width: '50%', // full width
+   marginTop: 20,
+   width: '50%', // full width 
    alignSelf: 'center',
-  },
-  newGoalButtonText: {
+ },
+ 
+ newGoalButtonText: {
    color: '#fff',
    fontSize: 16,
    fontWeight: 'bold',
-  },
-  congratulations: {
-   fontSize: 17,
-   color: '#fff',
-   fontWeight: 'bold',
-   textAlign: 'center',
-  },  
-
-
-
- });
+ },
+});
