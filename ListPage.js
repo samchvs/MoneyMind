@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, TextInput, Dimensions, Alert } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -32,7 +32,7 @@ const categoryIcons = {
   default: 'cash',
 };
 
-const timePeriodOptions = ['Daily', 'Weekly', 'Monthly'];
+const timePeriodOptions = ['Daily', 'Weekly', 'Monthly', 'Yearly'];
 
 export default function ListPage() {
   const db = useSQLiteContext();
@@ -50,6 +50,7 @@ export default function ListPage() {
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [dbReady, setDbReady] = useState(false);
+  const [totalOverallIncome, setTotalOverallIncome] = useState(0);
 
   useEffect(() => {
     const setupDatabase = async () => {
@@ -58,6 +59,7 @@ export default function ListPage() {
           await InitializeDatabase(db);
           setDbReady(true);
         } catch (e) {
+          console.error("Failed to initialize database:", e);
           Alert.alert('Database Error', 'Failed to initialize the database.');
         }
       }
@@ -65,34 +67,47 @@ export default function ListPage() {
     setupDatabase();
   }, [db]);
 
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      if (dbReady && loggedInUserId) {
-        try {
-          const expensesResult = await db.getAllAsync(
-            'SELECT id, amount, category, date FROM expenses WHERE user_id = ? ORDER BY date DESC, id DESC',
-            [loggedInUserId]
-          );
-          const incomeResult = await db.getAllAsync(
-            'SELECT id, amount, date FROM income WHERE user_id = ? ORDER BY date DESC, id DESC',
-            [loggedInUserId]
-          );
+  const loadTransactions = useCallback(async () => {
+    if (db && loggedInUserId) {
+      try {
+        const expensesResult = await db.getAllAsync(
+          'SELECT id, amount, category, date FROM expenses WHERE user_id = ? ORDER BY date DESC, id DESC',
+          [loggedInUserId]
+        );
+        const incomeResult = await db.getAllAsync(
+          'SELECT id, amount, date FROM income WHERE user_id = ? ORDER BY date DESC, id DESC',
+          [loggedInUserId]
+        );
 
-          const combinedTransactions = [
-            ...expensesResult.map(tx => ({ ...tx, type: 'expense' })),
-            ...incomeResult.map(tx => ({ ...tx, type: 'income', category: 'Income' })),
-          ];
-          combinedTransactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-          setAllTransactions(combinedTransactions);
-        } catch (error) {
-          Alert.alert('Database Error', 'Failed to load transaction data.');
-        }
-      } else {
-        setAllTransactions([]);
+        const combinedTransactions = [
+          ...expensesResult.map(tx => ({ ...tx, type: 'expense' })),
+          ...incomeResult.map(tx => ({ ...tx, type: 'income', category: 'Income' })),
+        ];
+        combinedTransactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        setAllTransactions(combinedTransactions);
+
+        const overallIncomeSum = incomeResult.reduce((sum, tx) => sum + tx.amount, 0);
+        setTotalOverallIncome(overallIncomeSum);
+
+      } catch (error) {
+        console.error("Failed to load transactions:", error);
+        Alert.alert('Database Error', 'Failed to load transaction data.');
       }
-    };
-    fetchTransactions();
-  }, [dbReady, loggedInUserId, timePeriod]);
+    } else {
+      setAllTransactions([]);
+      setTotalOverallIncome(0);
+    }
+  }, [db, loggedInUserId]);
+
+  useEffect(() => {
+    if (dbReady && loggedInUserId) {
+      loadTransactions();
+    } else if (dbReady && !loggedInUserId) {
+      setAllTransactions([]);
+      setTotalOverallIncome(0);
+    }
+  }, [dbReady, loggedInUserId, loadTransactions]);
+
 
   const handleCategoryPress = () => {
     setCategoryDropdownVisible(!categoryDropdownVisible);
@@ -154,14 +169,7 @@ export default function ListPage() {
       );
 
       if (result.changes > 0 || result.lastInsertRowId > 0) {
-        const expensesResult = await db.getAllAsync('SELECT id, amount, category, date FROM expenses WHERE user_id = ? ORDER BY date DESC, id DESC', [loggedInUserId]);
-        const incomeResult = await db.getAllAsync('SELECT id, amount, date FROM income WHERE user_id = ? ORDER BY date DESC, id DESC', [loggedInUserId]);
-        const combined = [
-          ...expensesResult.map(tx => ({ ...tx, type: 'expense' })),
-          ...incomeResult.map(tx => ({ ...tx, type: 'income', category: 'Income' })),
-        ];
-        combined.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-        setAllTransactions(combined);
+        loadTransactions();
 
         setModalVisible(false);
         setInputValue('');
@@ -171,7 +179,31 @@ export default function ListPage() {
         Alert.alert('Save Error', `Failed to save your expense.`);
       }
     } catch (error) {
+      console.error('Insert error:', error);
       Alert.alert('Database Error', `An error occurred while saving your expense.`);
+    }
+  };
+
+  const handleDeleteTransaction = async (transaction) => {
+    if (!dbReady || !loggedInUserId) {
+      Alert.alert('Error', 'Database not ready or user not logged in.');
+      return;
+    }
+
+    const table = transaction.type === 'expense' ? 'expenses' : 'income';
+
+    try {
+      const result = await db.runAsync(`DELETE FROM ${table} WHERE id = ? AND user_id = ?`, [transaction.id, loggedInUserId]);
+
+      if (result.changes > 0) {
+        loadTransactions();
+        Alert.alert('Success', `${transaction.type === 'expense' ? 'Expense' : 'Income'} deleted successfully.`);
+      } else {
+        Alert.alert('Delete Error', `Failed to delete the ${transaction.type}.`);
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      Alert.alert('Database Error', `An error occurred while deleting the ${transaction.type}.`);
     }
   };
 
@@ -180,30 +212,40 @@ export default function ListPage() {
       if (!transaction.date) return false;
       const transactionDate = new Date(transaction.date);
       const today = new Date();
+      const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
 
       let periodStart, periodEnd;
 
       switch (period) {
         case 'Daily':
-          periodStart = new Date(today.setHours(0, 0, 0, 0));
-          periodEnd = new Date(new Date().setHours(23, 59, 59, 999)); // Use new Date() to avoid mutating 'today' prematurely
+          periodStart = todayStart;
+          periodEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999);
           return transactionDate >= periodStart && transactionDate <= periodEnd;
         case 'Weekly':
-          const currentDay = today.getDay();
-          periodStart = new Date(today.setDate(today.getDate() - currentDay));
+          const dayOfWeek = todayStart.getDay();
+          periodStart = new Date(todayStart);
+          periodStart.setDate(todayStart.getDate() - dayOfWeek);
           periodStart.setHours(0, 0, 0, 0);
-          periodEnd = new Date(new Date(periodStart).setDate(periodStart.getDate() + 6));
+
+          periodEnd = new Date(periodStart);
+          periodEnd.setDate(periodStart.getDate() + 6);
           periodEnd.setHours(23, 59, 59, 999);
+
           return transactionDate >= periodStart && transactionDate <= periodEnd;
         case 'Monthly':
           periodStart = new Date(today.getFullYear(), today.getMonth(), 1, 0, 0, 0, 0);
           periodEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999);
+          return transactionDate >= periodStart && transactionDate <= periodEnd;
+        case 'Yearly':
+          periodStart = new Date(today.getFullYear(), 0, 1, 0, 0, 0, 0);
+          periodEnd = new Date(today.getFullYear(), 11, 31, 23, 59, 59, 999);
           return transactionDate >= periodStart && transactionDate <= periodEnd;
         default:
           return true;
       }
     });
   };
+
 
   const transactionsForPeriod = filterTransactionsByPeriod(allTransactions, timePeriod);
 
@@ -218,16 +260,29 @@ export default function ListPage() {
   };
 
   const { totalExp: currentTotalExpenses, totalInc: currentTotalIncome } = calculateTotals(transactionsForPeriod);
-  const totalBalance = currentTotalIncome - currentTotalExpenses;
 
   const pieChartData = () => {
     const data = [];
-    if (currentTotalIncome > 0) {
-      data.push({ name: 'Income', amount: currentTotalIncome, color: '#00e676', legendFontColor: '#fff', legendFontSize: 14 });
-    }
-    if (currentTotalExpenses > 0) {
-      data.push({ name: 'Expenses', amount: currentTotalExpenses, color: '#f9a825', legendFontColor: '#fff', legendFontSize: 14 });
-    }
+    const categoryExpenses = transactionsForPeriod
+        .filter(tx => tx.type === 'expense' && tx.category !== 'Income')
+        .reduce((acc, tx) => {
+            acc[tx.category] = (acc[tx.category] || 0) + tx.amount;
+            return acc;
+        }, {});
+
+    Object.entries(categoryExpenses).forEach(([category, amount], index) => {
+        const colors = ['#42a5f5', '#66bb6a', '#ffee58', '#ff7043', '#ab47bc', '#ef5350', '#26a69a'];
+        const color = colors[index % colors.length];
+        data.push({
+            name: category,
+            amount: parseFloat(amount.toFixed(2)),
+            color: color,
+            legendFontColor: '#fff',
+            legendFontSize: 12
+        });
+    });
+
+
     if (data.length === 0) {
       data.push({ name: 'No Data', amount: 1, color: '#555', legendFontColor: '#fff', legendFontSize: 14 });
     }
@@ -291,6 +346,9 @@ export default function ListPage() {
     transaction.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const displayedIncome = timePeriod === 'Yearly' ? totalOverallIncome * 12 : currentTotalIncome;
+  const displayedBalance = timePeriod === 'Yearly' ? (totalOverallIncome * 12) - currentTotalExpenses : currentTotalIncome - currentTotalExpenses;
+
   return (
     <LinearGradient colors={['#000', '#171717', '#232323', '#3b3b3b', '#4f4f4f']} style={styles.container}>
       {!dbReady && (
@@ -314,14 +372,14 @@ export default function ListPage() {
               </View>
               <View style={styles.summaryItem}>
                 <Text style={styles.summaryLabel}>Income ({timePeriod})</Text>
-                <Text style={styles.summaryAmountIncome}>₱{currentTotalIncome.toFixed(2)}</Text>
+                <Text style={styles.summaryAmountIncome}>₱{displayedIncome.toFixed(2)}</Text>
               </View>
             </View>
           </View>
 
           <View style={styles.balanceContainer}>
             <Text style={styles.balanceLabel}>Balance ({timePeriod})</Text>
-            <Text style={styles.balanceAmount}>₱{totalBalance.toFixed(2)}</Text>
+            <Text style={styles.balanceAmount}>₱{displayedBalance.toFixed(2)}</Text>
           </View>
 
           <View style={styles.chartContainer}>
@@ -353,10 +411,12 @@ export default function ListPage() {
             {currentPieData.length > 0 && !(currentPieData.length === 1 && currentPieData[0].name === 'No Data') && (
               <View style={styles.chartLegend}>
                 {currentPieData.map((item, index) => (
-                  <View key={index} style={styles.legendItem}>
-                    <View style={[styles.legendColor, { backgroundColor: item.color }]} />
-                    <Text style={styles.legendText}>{item.name}: ₱{item.amount.toFixed(2)}</Text>
-                  </View>
+                  item.name !== 'No Data' && (
+                    <View key={index} style={styles.legendItem}>
+                      <View style={[styles.legendColor, { backgroundColor: item.color }]} />
+                      <Text style={styles.legendText}>{item.name}: ₱{item.amount.toFixed(2)}</Text>
+                    </View>
+                   )
                 ))}
               </View>
             )}
@@ -399,28 +459,43 @@ export default function ListPage() {
             />
             <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent} nestedScrollEnabled={true}>
               {historyListData.length > 0 ? (
-                historyListData.map((transaction) => {
-                  const isIncome = transaction.type === 'income';
-                  const amountColorStyle = isIncome ? styles.amountIncome : styles.amountExpense;
-                  return (
-                    <TouchableOpacity key={`${transaction.type}-${transaction.id}-${Math.random()}`} style={styles.historyRow}>
-                      <View style={styles.categoryInfo}>
-                        <View style={styles.categoryIcon}>
-                          <MaterialCommunityIcons name={categoryIcons[transaction.category] || categoryIcons.default} size={24} color="#000" />
+                <>
+                  {historyListData.map((transaction) => {
+                    const isIncome = transaction.type === 'income';
+                    const amountColorStyle = isIncome ? styles.amountIncome : styles.amountExpense;
+                    return (
+                      <TouchableOpacity
+                        key={`${transaction.type}-${transaction.id}-${transaction.date}`}
+                        style={styles.historyRow}
+                        onPress={() =>
+                          Alert.alert(
+                            "Delete Transaction",
+                            `Are you sure you want to delete this ${transaction.type === 'expense' ? 'expense' : 'income'} of ₱${transaction.amount.toFixed(2)}?`,
+                            [
+                              { text: "Cancel", style: "cancel" },
+                              { text: "Delete", onPress: () => handleDeleteTransaction(transaction), style: "destructive" }
+                            ]
+                          )
+                        }
+                      >
+                        <View style={styles.categoryInfo}>
+                          <View style={styles.categoryIcon}>
+                            <MaterialCommunityIcons name={categoryIcons[transaction.category] || categoryIcons.default} size={24} color="#000" />
+                          </View>
+                          <View>
+                            <Text style={styles.categoryName}>{transaction.category}</Text>
+                            <Text style={styles.transactionDate}>
+                              {transaction.date ? new Date(transaction.date).toLocaleDateString() : 'No Date'}
+                            </Text>
+                          </View>
                         </View>
-                        <View>
-                          <Text style={styles.categoryName}>{transaction.category}</Text>
-                          <Text style={styles.transactionDate}>
-                            {transaction.date ? new Date(transaction.date).toLocaleDateString() : 'No Date'}
-                          </Text>
-                        </View>
-                      </View>
-                      <Text style={[styles.amountText, amountColorStyle]}>
-                        {isIncome ? '+' : '-'}₱{Math.abs(transaction.amount).toFixed(2)}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })
+                        <Text style={[styles.amountText, amountColorStyle]}>
+                          {isIncome ? '+' : '-'}₱{Math.abs(transaction.amount).toFixed(2)}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </>
               ) : (
                 <Text style={styles.noTransactionsText}>No transactions found for this period/search.</Text>
               )}
@@ -443,25 +518,26 @@ export default function ListPage() {
               </TouchableOpacity>
               {categoryDropdownVisible && (
                 <View style={styles.dropdownList}>
-                  {/* Removed ScrollView */}
-                  {selectableCategories.map((category, index) => (
-                    <View
-                      key={category}
-                      style={[
-                        styles.dropdownItemContainer,
-                        index === selectableCategories.length - 1 && styles.dropdownItemContainerLast
-                      ]}
-                    >
-                      <TouchableOpacity onPress={() => handleCategorySelect(category)}>
-                        <Text style={styles.dropdownItem}>{category}</Text>
-                      </TouchableOpacity>
-                    </View>
-                  ))}
+                  <ScrollView contentContainerStyle={styles.dropdownScrollViewContent} nestedScrollEnabled={true}>
+                    {selectableCategories.map((category, index) => (
+                      <View
+                        key={category}
+                        style={[
+                          styles.dropdownItemContainer,
+                          index === selectableCategories.length - 1 && styles.dropdownItemContainerLast
+                        ]}
+                      >
+                        <TouchableOpacity onPress={() => handleCategorySelect(category)}>
+                          <Text style={styles.dropdownItem}>{category}</Text>
+                        </TouchableOpacity>
+                      </View>
+                    ))}
+                  </ScrollView>
                 </View>
               )}
             </View>
 
-            <Text style={styles.modalTitle}>Enter Amount for {selectedCategory || '...'}</Text>
+            <Text style={styles.modalTitle}>Enter Amount {selectedCategory ? `for ${selectedCategory}` : ''}</Text>
             <Text style={styles.inputDisplay}>₱{inputValue || '0.00'}</Text>
 
             <View style={styles.keypadContainer}>
@@ -587,12 +663,14 @@ const styles = StyleSheet.create({
   chartLegend: {
     flexDirection: 'row',
     justifyContent: 'space-around',
+    flexWrap: 'wrap',
     width: '100%',
     marginTop: 10,
   },
   legendItem: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 5,
   },
   legendColor: {
     width: 12,
@@ -602,7 +680,7 @@ const styles = StyleSheet.create({
   },
   legendText: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: 12,
   },
   fabPlusButton: {
     position: 'absolute',
@@ -650,6 +728,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+    zIndex: 100,
   },
   scrollViewContent: {
     paddingBottom: 20,
@@ -714,6 +793,11 @@ const styles = StyleSheet.create({
     padding: 25,
     borderRadius: 15,
     alignItems: 'center',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
   },
   dropdownContainer: {
     marginBottom: 20,
@@ -745,19 +829,16 @@ const styles = StyleSheet.create({
     borderColor: '#444',
     borderWidth: 1,
     zIndex: 310,
-    // Removed maxHeight to show all items
-    // maxHeight: 180,
+    maxHeight: 180,
+    overflow: 'hidden',
     elevation: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
   },
-  dropdownScrollView: {
-    flex: 1,
-  },
   dropdownScrollViewContent: {
-    paddingVertical: 0, // Removed padding here as ScrollView is removed
+    paddingVertical: 0,
   },
   dropdownItemContainer: {
     width: '100%',
@@ -778,6 +859,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     marginBottom: 15,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   inputDisplay: {
     fontSize: 40,
@@ -882,6 +964,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     zIndex: 210,
     maxHeight: 150,
+    overflow: 'hidden',
     elevation: 6,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
