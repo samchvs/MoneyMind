@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View,
   Text,
@@ -14,15 +14,20 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-
+import { useSQLiteContext } from 'expo-sqlite';
+import { useUser } from './UserContext';
 
 export default function HomePage({ route }) {
   const username = route?.params?.username;
+  const db = useSQLiteContext();
+  const { loggedInUser } = useUser();
+  const loggedInUserId = loggedInUser?.user_id;
   const [jumpValue1] = useState(new Animated.Value(0));
   const [jumpValue2] = useState(new Animated.Value(0));
   const [jumpValue3] = useState(new Animated.Value(0));
   const [footerIconJump] = useState(new Animated.Value(0));
   const [footerIcon2Jump] = useState(new Animated.Value(0));
+  const [footerIcon3Jump] = useState(new Animated.Value(0));
   const [footerIcon4Jump] = useState(new Animated.Value(0));
   const [footerIcon5Jump] = useState(new Animated.Value(0));
   const [modalVisible, setModalVisible] = useState(false);
@@ -34,6 +39,33 @@ export default function HomePage({ route }) {
   const [savingsValue, setSavingsValue] = useState('');
   const navigation = useNavigation();
   
+  useEffect(() => {
+    const fetchLatestSavings = async () => {
+      if (db && loggedInUserId) {
+        try {
+          const latestSavingsResult = await db.getFirstAsync(
+            'SELECT SUM(sc.amount) AS total_contributed FROM savings_contributions sc ' +
+            'INNER JOIN savings_goals sg ON sc.savings_goal_id = sg.id ' +
+            'WHERE sg.user_id = ? ' +
+            'ORDER BY sg.id DESC LIMIT 1',
+            [loggedInUserId]
+          );
+
+          if (latestSavingsResult && latestSavingsResult.total_contributed !== null) {
+            setSavingsValue(latestSavingsResult.total_contributed.toFixed(2));
+          } else {
+            setSavingsValue('0.00');
+          }
+        } catch (error) {
+          console.error('HomePage - Error fetching latest savings:', error);
+          // Optionally, you can show an error message to the user
+        }
+      }
+    };
+
+    fetchLatestSavings();
+  }, [db, loggedInUserId]); // Re-fetch if db or userId changes
+
 
   const handlePress = (boxNumber) => {
     let jumpValue;
@@ -150,25 +182,25 @@ export default function HomePage({ route }) {
           
         {/* Savings Icon */}
         <TouchableOpacity
-        activeOpacity={0.7}
-        style={{ alignItems: 'center', marginHorizontal: 20 }}
-        onPress={() => {
-          Animated.sequence([
-            Animated.timing(footerIcon2Jump, {
-              toValue: -10,
-              duration: 100,
-              useNativeDriver: true,
-            }),
-            Animated.timing(footerIcon2Jump, {
-              toValue: 0,
-              duration: 100,
-              useNativeDriver: true,
-            }),
-          ]).start(() => {
-            navigation.navigate('SavingsPage', {username}); //navigation to SavingsPage.js
-          });
-        }}
-      >
+            activeOpacity={0.7}
+            style={{ alignItems: 'center', marginHorizontal: 20 }}
+            onPress={() => {
+              Animated.sequence([
+                Animated.timing(footerIcon2Jump, {
+                  toValue: -10,
+                  duration: 100,
+                  useNativeDriver: true,
+                }),
+                Animated.timing(footerIcon2Jump, {
+                  toValue: 0,
+                  duration: 100,
+                  useNativeDriver: true,
+                }),
+              ]).start(() => {
+                navigation.navigate('SavingsPage', { username }); //navigation to SavingsPage.js
+              });
+            }}
+          >
         <Animated.Image
           source={require('./assets/savingsIcon.png')}
           style={[
@@ -177,6 +209,36 @@ export default function HomePage({ route }) {
           ]}
         />
         <Text style={styles.footerIcon2Text}>Savings</Text>
+      </TouchableOpacity>
+
+      {/* Home icon */}
+      <TouchableOpacity
+            activeOpacity={0.7}
+            style={{ alignItems: 'center', marginHorizontal: 20 }}
+            onPress={() => {
+              Animated.sequence([
+                Animated.timing(footerIcon3Jump, {
+                  toValue: -10,
+                  duration: 100,
+                  useNativeDriver: true,
+                }),
+                Animated.timing(footerIcon3Jump, {
+                  toValue: 0,
+                  duration: 100,
+                  useNativeDriver: true,
+                }),
+              ]).start(() => {
+              });
+            }}
+          >
+        <Animated.Image
+          source={require('./assets/home.png')}
+          style={[
+            styles.footerIcon3,
+            { transform: [{ translateY: footerIcon3Jump }] },
+          ]}
+        />
+        <Text style={styles.footerIcon3Text}>Home</Text>
       </TouchableOpacity>
 
       {/* Wallet Icon */}
@@ -207,7 +269,7 @@ export default function HomePage({ route }) {
           { transform: [{ translateY: footerIcon4Jump }] },
         ]}
       />
-      <Text style={styles.footerIcon4Text}>Wallet</Text>
+      <Text style={styles.footerIcon4Text}>Budget</Text>
     </TouchableOpacity>
 
       {/* AI Icon */}
@@ -561,14 +623,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 40,
     height: 40,
-    left: 45,
+    left: 10,
     top: 8, 
   },
   footerIconText: {
     position: 'absolute',
     width: 40,
     height: 40,
-    left: 57,
+    left: 22,
     top: 45, 
     fontSize: 12,
     color: '#aaaaaa',
@@ -578,50 +640,65 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 40,
     height: 40,
-    left: 120, 
+    left: 80, 
     top: 6,   
   },
   footerIcon2Text: {
     position: 'absolute',
     width: 60,
     height: 40,
-    left: 120, 
+    left: 80, 
     top: 45,   
     fontSize: 12,
     color: '#aaaaaa',
     fontWeight: 'bold',
   },
-
+  footerIcon3: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    left: 155, 
+    top: 6,   
+  },
+  footerIcon3Text: {
+    position: 'absolute',
+    width: 60,
+    height: 40,
+    left: 160, 
+    top: 45,   
+    fontSize: 12,
+    color: '#aaaaaa',
+    fontWeight: 'bold',
+  },
   footerIcon4: {
     position: 'absolute',
     width: 40,
     height: 40,
-    left: 210, 
+    left: 230, 
     top: 8,   
   },
   footerIcon4Text: {
     position: 'absolute',
     width: 60,
     height: 40,
-    left: 213, 
+    left: 230, 
     top: 45,   
     fontSize: 12,
     color: '#aaaaaa',
     fontWeight: 'bold',
   },
-
   footerIcon5: {
     position: 'absolute',
     width: 40,
     height: 40,
-    left: 280,
+    left: 300,
     top: 8,   
   },
   footerIcon5Text: {
     position: 'absolute',
     width: 60,
     height: 40,
-    left: 295, 
+    left: 313, 
     top: 45,   
     fontSize: 12,
     color: '#aaaaaa',
