@@ -55,6 +55,21 @@ import React, { useState, useEffect, useRef } from 'react';
           date TEXT NOT NULL, 
           FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
         );
+
+        CREATE TABLE IF NOT EXISTS predicted_budgets (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id INTEGER NOT NULL,
+          income_used REAL NOT NULL, -- Store the income value used for THIS prediction
+          prediction_date TEXT NOT NULL,
+          bills_amount REAL,
+          food_amount REAL,
+          transportation_amount REAL,
+          entertainment_amount REAL,
+          savings_amount REAL,
+          personal_spending_amount REAL,
+          healthcare_amount REAL,
+          FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+        );
      `);
      console.log('Database tables initialized successfully');
    } catch (error) {

@@ -1,75 +1,64 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { View, StyleSheet, Animated } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
-import { LinearGradient } from 'expo-linear-gradient';
-import LoadingPage from './LoadingPage';
+import { createStackNavigator } from '@react-navigation/stack';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+import 'react-native-reanimated';
+
+// Import your pages
+import RegisterPage from './RegisterPage';
 import LoginPage from './LoginPage';
 import HomePage from './HomePage';
-import RegisterPage from './RegisterPage';
-import SavingsPage from './SavingsPage';
 import ListPage from './ListPage';
+import SavingsPage from './SavingsPage';
 import WalletPage from './WalletPage';
-import { SQLiteProvider } from 'expo-sqlite';
+// Import both AiPage (intro) and GenAiPage (generation)
+import AiPage from './AiPage'; // This is your introductory AI page
+import GenAiPage from './GenAiPage'; // This is your AI generation page
+
+// Import the UserContext and PredictedBudgetContext
 import { UserProvider } from './UserContext';
+import { PredictedBudgetProvider } from './PredictedBudgetContext';
+
+// Import standard SQLite and SQLiteProvider
+import * as SQLite from 'expo-sqlite';
+import { SQLiteProvider } from 'expo-sqlite';
+
+// Import InitializeDatabase - ensure this function uses standard SQLite methods
+import { InitializeDatabase } from './RegisterPage';
+
+// Prevent the splash screen from auto-hiding before asset loading is complete.
+SplashScreen.preventAutoHideAsync();
 
 const Stack = createStackNavigator();
 
-export default function App() {
-  const [showLogin, setShowLogin] = useState(false);
-  const loadingOpacity = useRef(new Animated.Value(1)).current;
+// Define the database name
+const databaseName = 'db.db';
 
+export default function App() {
   useEffect(() => {
-    setTimeout(() => {
-      Animated.timing(loadingOpacity, {
-        toValue: 0,
-        duration: 500,
-        useNativeDriver: true,
-      }).start(() => {
-        setShowLogin(true); 
-      });
-    }, 1000);
+    SplashScreen.hideAsync();
   }, []);
 
   return (
-    <SQLiteProvider databaseName="db.db">
     <UserProvider>
-      {!showLogin ? (
-        <LinearGradient colors={['#000000', '#171717', '#232323']} style={styles.gradientContainer}>
-          <Animated.View style={[styles.fullscreen, { opacity: loadingOpacity }]}>
-            <LoadingPage />
-          </Animated.View>
-        </LinearGradient>
-      ) : (
-        <NavigationContainer>
-          <Stack.Navigator
-            screenOptions={{
-              headerShown: false,
-              cardStyle: { backgroundColor: '#000000' },
-              ...TransitionPresets.SlideFromRightIOS,
-            }}
-          >
-            <Stack.Screen name="LoginPage" component={LoginPage} />
-            <Stack.Screen name="RegisterPage" component={RegisterPage} />
-            <Stack.Screen name="HomePage" component={HomePage} />
-            <Stack.Screen name="SavingsPage" component={SavingsPage} />
-            <Stack.Screen name="ListPage" component={ListPage} />
-            <Stack.Screen name="WalletPage" component={WalletPage} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      )}
-      </UserProvider>
-    </SQLiteProvider>
+      <PredictedBudgetProvider>
+        <SQLiteProvider databaseName={databaseName} onInit={InitializeDatabase}>
+          <NavigationContainer>
+            <Stack.Navigator initialRouteName="RegisterPage" screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="RegisterPage" component={RegisterPage} />
+              <Stack.Screen name="LoginPage" component={LoginPage} />
+              <Stack.Screen name="HomePage" component={HomePage} />
+              <Stack.Screen name="ListPage" component={ListPage} />
+              <Stack.Screen name="SavingsPage" component={SavingsPage} />
+              <Stack.Screen name="WalletPage" component={WalletPage} />
+              {/* Map the introductory AiPage component to 'AiIntroPage' */}
+              <Stack.Screen name="AiIntroPage" component={AiPage} />
+              {/* Map the generation GenAiPage component to 'AiPage' */}
+              <Stack.Screen name="AiPage" component={GenAiPage} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </SQLiteProvider>
+      </PredictedBudgetProvider>
+    </UserProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  gradientContainer: {
-    flex: 1, 
-  },
-  fullscreen: {
-    flex: 1,
-    justifyContent: 'center', 
-    alignItems: 'center', 
-  },
-});

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, TextInput, Dimensions, Alert } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
@@ -320,7 +321,7 @@ export default function ListPage() {
           >
             <MaterialIcons name="calendar-today" size={28} color="#fff" />
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.keypadButton, styles.enterButton]} onPress={() => handleKeypadPress('enter')}>
+          <TouchableOpacity style={styles.enterButton} onPress={() => handleKeypadPress('enter')}>
             <MaterialIcons name="check" size={36} color="#fff" />
           </TouchableOpacity>
         </View>
@@ -399,7 +400,7 @@ export default function ListPage() {
                 accessor="amount"
                 backgroundColor="transparent"
                 hasLegend={false}
-                center={[(width * 0.8) / 2 - (width * 0.1), 100]}
+                center={[(width * 0.8) / 2 - (width * 0.1), 10]}
                 absolute
               />
             ) : (
@@ -635,11 +636,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     marginTop: 2,
   },
-  chartContainer: {
-    alignItems: 'center',
-    marginVertical: 20,
-    paddingHorizontal: 20,
-  },
   noChartDataContainer: {
     height: 200,
     justifyContent: 'center',
@@ -671,6 +667,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 5,
+    paddingLeft: 25,  
+    paddingRight: 25, 
   },
   legendColor: {
     width: 12,
@@ -697,13 +695,13 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
-    zIndex: 1,
+    zIndex: 1000,
   },
   historyContainer: {
     flex: 1,
     paddingHorizontal: 20,
     paddingTop: 10,
-    marginBottom: 80,
+    marginBottom: 10,
   },
   historyHeader: {
     flexDirection: 'row',
@@ -829,7 +827,7 @@ const styles = StyleSheet.create({
     borderColor: '#444',
     borderWidth: 1,
     zIndex: 310,
-    maxHeight: 180,
+    maxHeight: 350,
     overflow: 'hidden',
     elevation: 8,
     shadowColor: '#000',
@@ -880,19 +878,20 @@ const styles = StyleSheet.create({
   numericKeypad: {
     flex: 3,
     flexDirection: 'column',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around', 
     paddingRight: 5,
   },
   specialButtons: {
-    flex: 1,
+     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingLeft: 5,
   },
   keypadRow: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     marginBottom: 5,
+    
   },
   keypadButton: {
     backgroundColor: '#333',
@@ -907,16 +906,32 @@ const styles = StyleSheet.create({
     backgroundColor: '#2c2c2c',
   },
   deleteButton: {
-    backgroundColor: '#ff5c5c',
+   backgroundColor: '#ff5c5c',
+    aspectRatio: 1,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 5,
   },
   calendarButton: {
     backgroundColor: '#555',
+    aspectRatio: 1,
+    borderRadius: 10,
+    ustifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 5,
   },
   enterButton: {
     backgroundColor: '#00e676',
-    flexGrow: 1,
-    minHeight: 100,
-  },
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 9,
+    marginTop: 3,
+    height: '25', 
+    width: 60, 
+    flexGrow: 2, 
+  }, 
   disabledKeypadButton: {
     opacity: 0.5,
   },
@@ -963,7 +978,7 @@ const styles = StyleSheet.create({
     borderColor: '#444',
     borderWidth: 1,
     zIndex: 210,
-    maxHeight: 150,
+    maxHeight: 300,
     overflow: 'hidden',
     elevation: 6,
     shadowColor: '#000',
