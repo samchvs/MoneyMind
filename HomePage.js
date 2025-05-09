@@ -248,44 +248,42 @@ export default function HomePage({ route }) {
 
 
   const renderKeypad = () => {
-    const numericKeys = [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9'], ['.', '0', '']];
-    return (
-      <View style={styles.keypad}>
-        <View style={styles.numericKeypad}>
-          {numericKeys.map((row, rowIndex) => (
-            <View key={rowIndex} style={styles.keypadRow}>
-              {row.map((key) => (
-                <TouchableOpacity
-                  key={key || `empty-${rowIndex}-${Math.random()}`}
-                  style={[styles.keypadButton, styles.numericButton]}
-                  onPress={() => handleKeypadPress(key)}
-                  disabled={key === ''}
-                >
-                  <Text style={styles.keypadText}>{key}</Text>
-                </TouchableOpacity>
-              ))}
+  const numericKeys = [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9'], ['.', '0', '']];
+  return (
+    <View style={styles.keypad}>
+      <View style={styles.numericKeypad}>
+        {numericKeys.map((row, rowIndex) => (
+          <View key={rowIndex} style={styles.keypadRow}>
+            {row.map((key, colIndex) => (
               <TouchableOpacity
-                key="empty"
-                style={[styles.keypadButton, { opacity: 0 }]}
-                disabled={true}
+                key={key || `empty-${rowIndex}-${colIndex}`}
+                style={[styles.keypadButton, styles.numericButton]}
+                onPress={() => handleKeypadPress(key)}
+                disabled={key === ''}
               >
-                <Text style={styles.keypadText}></Text>
+                <Text style={styles.keypadText}>{key}</Text>
               </TouchableOpacity>
-            </View>
-          ))}
-        </View>
-        <View style={styles.specialButtons}>
-          <TouchableOpacity style={[styles.keypadButton, styles.deleteButton]} onPress={() => handleKeypadPress('delete')}>
-            <MaterialIcons name="backspace" size={28} color="#fff" />
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.keypadButton, styles.enterButton]} onPress={() => handleKeypadPress('enter')}>
-            <MaterialIcons name="check" size={36} color="#fff" />
-          </TouchableOpacity>
-        </View>
+            ))}
+          </View>
+        ))}
       </View>
-    );
-  };
-
+      <View style={styles.specialButtons}>
+        <TouchableOpacity 
+          style={[styles.keypadButton, styles.deleteButton]} 
+          onPress={() => handleKeypadPress('delete')}
+        >
+          <MaterialIcons name="backspace" size={28} color="#fff" />
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={[styles.keypadButton, styles.enterButton]} 
+          onPress={() => handleKeypadPress('enter')}
+        >
+          <MaterialIcons name="check" size={36} color="#fff" />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
 
   return (
     <LinearGradient
@@ -503,8 +501,7 @@ export default function HomePage({ route }) {
           </Animated.View>
         </TouchableWithoutFeedback>
 
-
-        <Modal
+       <Modal
           animationType="slide"
           transparent={true}
           visible={modalVisible}
@@ -639,12 +636,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingHorizontal: 5,
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-  },
+ modalOverlay: {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: 'rgba(0, 0, 0, 0.8)',
+},
   modalContent: {
     width: screenWidth * 0.9,
     backgroundColor: '#1e1e1e',
@@ -687,60 +684,53 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     width: '100%',
   },
-  keypadContainer: {
+ keypadContainer: {
     marginTop: 10,
     width: '100%',
     paddingBottom: 10,
+    alignItems: 'center',
   },
   keypad: {
+    width: '93%',
     flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
   },
   numericKeypad: {
     flex: 3,
     flexDirection: 'column',
-    justifyContent: 'space-between',
-    paddingRight: 5,
   },
-  specialButtons: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    marginLeft: 10,
-  },
-  keypadRow: {
+   keypadRow: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    marginBottom: 5,
+    justifyContent: 'space-between',
+    marginBottom: 10,
   },
-  keypadButton: {
+ keypadButton: {
     backgroundColor: '#333',
-    aspectRatio: 1,
-    flex: 1,
-    margin: 3,
-    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 10,
+    height: 65,
+    flex: 1,
+    marginHorizontal: 5,
   },
   numericButton: {
     backgroundColor: '#2c2c2c',
   },
   deleteButton: {
     backgroundColor: '#ff5c5c',
-    flexGrow: 0,
-    minHeight: 60,
-    marginBottom: 5,
   },
   enterButton: {
     backgroundColor: '#00e676',
-    flexGrow: 0,
-    minHeight: 60,
-    height: 100,
+    flex: 1,
+    marginTop: 10,
+    marginBottom: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 55,
   },
   keypadText: {
     color: '#fff',
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: 'bold',
   },
   footer: {
