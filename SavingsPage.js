@@ -337,8 +337,8 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
         <View style={styles.chartWrapper}>
           <PieChart
             data={chartData} // Use adjusted chartData
-            width={width - 40}
-            height={220}
+            width={width - 50}
+            height={240}
             chartConfig={{
               color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // White labels
               labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
@@ -356,7 +356,7 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
             <View key={index} style={styles.legendItem}>
               <View style={[styles.legendColor, { backgroundColor: item.color }]} />
               <Text style={styles.legendText}>
-                {item.name}
+                {item.name}: {parsedGoal && item.amount !== 1 ? item.amount : '0'}
               </Text>
             </View>
           ))}
@@ -562,7 +562,7 @@ const styles = StyleSheet.create({
    marginBottom: 10,
  },
  chartWrapper: {
-   marginTop: 10,
+   marginTop: 50,
    alignItems: 'center',
    justifyContent: 'center',
    left: 73,
@@ -766,6 +766,7 @@ const styles = StyleSheet.create({
    maxWidth: '90%', 
    padding: 10, 
    lineHeight: 22, 
+   marginBottom: 20,
  },
  quoteContainer: {
    marginTop: 10,
