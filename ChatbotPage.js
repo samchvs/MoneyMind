@@ -29,7 +29,36 @@ const ChatbotPage = () => {
     Keyboard.dismiss(); // Hide keyboard after submitting
 
     try {
-      const promptText = `Analyze the monthly income of ${prompt} and provide a concise, single-line estimate for each of the following categories as a percentage or a fixed amount.  Use the Philippine Peso sign (₱) and do not use the dollar sign.  Format the response with each category on a new line like this:  "Bills: <value>", "Food: <value>", etc. After the category breakdown, provide financial advice based on the income and expenses.  Specifically, analyze the income vs. expenses and recommend a budget (e.g., 50/30/20 rule: Needs/Wants/Savings).  Warn users if spending is high in specific categories.\n\nBills:\nFood:\nTransportation:\nPersonal Spending:\nSavings:\nHealthcare:\nEntertainment:`;
+      const promptText = `Analyze the monthly income of ${prompt} and provide a concise, single-line estimate for each of the following categories as a percentage or a fixed amount. Use the Philippine Peso sign (₱) and do not use the dollar sign. Format the response with each category on a new line like this: "Bills: <value>", "Food: <value>", etc.
+
+    Follow this format:
+
+    Breakdown of income:
+
+    - Bills: <value>
+    - Food: <value>
+    - Transportation: <value>
+    - Personal Spending: <value>
+    - Savings: <value>
+    - Healthcare: <value>
+    - Entertainment: <value>
+
+    Financial Advice based on Expenses:
+
+    - Provide a brief summary of how the income compares to the expenses and whether there are areas for improvement.
+
+    Saving Tips:
+
+    - Offer general advice on how to save more effectively, possibly suggesting adjustments to spending based on the categories.
+
+    The 50/30/20 rule:
+
+    - Explain how the 50/30/20 rule can be applied based on the user’s input: 50% for Needs (Bills, Healthcare, Transportation), 30% for Wants (Food, Entertainment, Personal Spending), and 20% for Savings. Based on the user’s input, suggest a budget breakdown according to this rule.
+    
+    New Budget Created by Budgie:
+        Create a budget that will fix the budget inputted by the user. Make the budgeting smart and financially wise. 
+    `
+    ;
 
       const res = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
