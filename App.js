@@ -1,3 +1,13 @@
+// test screen
+/*
+import ChatbotPage from './ChatbotPage';
+
+export default function App() {
+  return <ChatbotPage />;
+}
+
+*/
+
 import React, { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, Animated } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -11,7 +21,7 @@ import SavingsPage from './SavingsPage';
 import ListPage from './ListPage';
 import WalletPage from './WalletPage';
 import AiPage from './AiPage';
-import GenAiPage from './GenAiPage';
+import ChatbotPage from './ChatbotPage';
 
 import { SQLiteProvider } from 'expo-sqlite';
 import { UserProvider } from './UserContext';
@@ -57,9 +67,9 @@ export default function App() {
             <Stack.Screen name="SavingsPage" component={SavingsPage} />
             <Stack.Screen name="ListPage" component={ListPage} />
             <Stack.Screen name="AiPage" component={AiPage} />
-            <Stack.Screen name="GenAiPage" component={GenAiPage} />
             <Stack.Screen name="HomePage" component={HomePage} />
             <Stack.Screen name="WalletPage" component={WalletPage} />
+            <Stack.Screen name="ChatbotPage" component={ChatbotPage} />
            
  
           </Stack.Navigator>
@@ -80,3 +90,4 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
   },
 });
+

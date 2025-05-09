@@ -667,8 +667,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 5,
-    paddingLeft: 25,  
-    paddingRight: 25, 
   },
   legendColor: {
     width: 12,
@@ -701,7 +699,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingTop: 10,
-    marginBottom: 10,
+    marginBottom: 80,
   },
   historyHeader: {
     flexDirection: 'row',

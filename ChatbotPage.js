@@ -26,15 +26,19 @@ const ChatbotPage = () => {
   const handleAskGemini = async () => {
     setLoading(true);
     setResponse('');
-    Keyboard.dismiss(); // Hide keyboard after submitting
-
+    Keyboard.dismiss(); 
     try {
       const promptText = `Analyze the monthly income of ${prompt} and provide a concise, single-line estimate for each of the following categories as a percentage or a fixed amount. Use the Philippine Peso sign (₱) and do not use the dollar sign. Format the response with each category on a new line like this: "Bills: <value>", "Food: <value>", etc.
-
+    Always acknowledge the user's input!
+    
     Follow this format:
 
-    Breakdown of income:
+    General Information (Dont display the word prompt):
+    Income: 
+    Expenses: 
 
+    
+    If the user inputed expenses that is aligned with the following categories, display these:
     - Bills: <value>
     - Food: <value>
     - Transportation: <value>
@@ -43,7 +47,7 @@ const ChatbotPage = () => {
     - Healthcare: <value>
     - Entertainment: <value>
 
-    Financial Advice based on Expenses:
+    Financial Advice based on Expenses(If the user said anything about spent, expenses, spend, then that is expenses if none, leave it blank):
 
     - Provide a brief summary of how the income compares to the expenses and whether there are areas for improvement.
 
@@ -54,10 +58,13 @@ const ChatbotPage = () => {
     The 50/30/20 rule:
 
     - Explain how the 50/30/20 rule can be applied based on the user’s input: 50% for Needs (Bills, Healthcare, Transportation), 30% for Wants (Food, Entertainment, Personal Spending), and 20% for Savings. Based on the user’s input, suggest a budget breakdown according to this rule.
-    
+    - Explain how this works and where it could be applied to:
+
     New Budget Created by Budgie:
         Create a budget that will fix the budget inputted by the user. Make the budgeting smart and financially wise. 
-    `
+    
+    State a conclusion and remind them of smart budgeting and financial choices
+        `
     ;
 
       const res = await fetch(
@@ -143,7 +150,7 @@ const ChatbotPage = () => {
             <View style={styles.inputContainer}>
               <TextInput
                 style={styles.input}
-                placeholder="Enter your monthly income..."
+                placeholder="Enter your monthly income or ask about any financial concerns..."
                 value={prompt}
                 onChangeText={setPrompt}
                 //keyboardType="numeric"
@@ -156,7 +163,7 @@ const ChatbotPage = () => {
                 disabled={!prompt || loading}
               >
                 <Text style={styles.buttonText}>
-                  {loading ? 'Processing...' : 'Get Budget Breakdown'}
+                  {loading ? 'Processing...' : 'Generate Budgie'}
                 </Text>
               </TouchableOpacity>
             </View>

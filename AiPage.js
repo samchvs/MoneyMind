@@ -20,7 +20,7 @@ const AiPage = () => {
         />
         
         <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('GenAiPage')}
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ChatbotPage')}
         >
             <View style={styles.buttonContent}>
             <Image
