@@ -61,18 +61,17 @@ import React, { useState, useEffect, useRef } from 'react';
      console.error('Failed to initialize database tables:', error);
    }
  };
- import { useUser } from './UserContext'; // Assuming UserContext.js is in the same directory
+ import { useUser } from './UserContext'; 
 
  export default function RegisterPage({ navigation }) {
    const db = useSQLiteContext();
-   // Destructure loggedInUser as well to watch for changes in the useEffect
    const { loggedInUser, setLoggedInUser } = useUser();
 
    const [username, setUsername] = useState('');
    const [password, setPassword] = useState('');
    const [confirmPassword, setConfirmPassword] = useState('');
    const [error, setError] = useState('');
-   const [dbReady, setDbReady] = useState(false); // Add state for database readiness
+   const [dbReady, setDbReady] = useState(false); 
 
    const logoMoveUp = useRef(new Animated.Value(0)).current;
    const moneyMindMoveUp = useRef(new Animated.Value(0)).current;
@@ -83,7 +82,7 @@ import React, { useState, useEffect, useRef } from 'react';
    useEffect(() => {
      const initialize = async () => {
         if (db) {
-            await InitializeDatabase(db); // Initialize database when component mounts and db is available
+            await InitializeDatabase(db); 
             setDbReady(true);
         }
 
@@ -124,7 +123,7 @@ import React, { useState, useEffect, useRef } from 'react';
      };
 
      initialize();
-   }, [db]); // Depend on db to ensure it's available before initializing
+   }, [db]); 
 
    const handleRegister = async () => {
         if (!dbReady) {
@@ -168,13 +167,12 @@ import React, { useState, useEffect, useRef } from 'react';
          [username, password]
        );
 
-       // Check if insertion was successful and get the last inserted row ID (user_id)
        if (result.changes > 0) {
          const userId = result.lastInsertRowId;
          const userData = { user_id: userId, username: username };
-         setLoggedInUser(userData); // Set the user in the context
+         setLoggedInUser(userData);
          console.log('RegisterPage - User registered and set in context:', userData);
-         // The useEffect below will handle navigation
+         
        } else {
          setError('Registration failed.');
          Vibration.vibrate();
@@ -185,13 +183,12 @@ import React, { useState, useEffect, useRef } from 'react';
      }
    };
 
-   // This useEffect watches for changes in loggedInUser and navigates
    useEffect(() => {
      if (loggedInUser) {
        console.log('RegisterPage - Navigating to HomePage');
        navigation.navigate('HomePage', { username: loggedInUser.username });
      }
-   }, [loggedInUser, navigation]); // Depend on loggedInUser and navigation
+   }, [loggedInUser, navigation]); 
 
    return (
      <LinearGradient
@@ -239,11 +236,10 @@ import React, { useState, useEffect, useRef } from 'react';
            secureTextEntry
            onChangeText={setConfirmPassword}
          />
-          {/* Consider adding a checkmark icon logic for username length or availability if desired */}
          <Ionicons
            name="checkmark-circle"
            size={20}
-           color={username && username.length <= 15 ? '#00ff00' : 'transparent'} // Only show if username is entered and within limit
+           color={username && username.length <= 15 ? '#00ff00' : 'transparent'} 
            style={styles.icon}
          />
          {error ? <Text style={styles.errorText}>{error}</Text> : null}
@@ -263,8 +259,6 @@ import React, { useState, useEffect, useRef } from 'react';
    );
  }
 
- // Styles remain the same as provided, assuming they are correct for styling.
- // Removed the calculator grid styles as they seem unrelated to the login/register pages.
  const styles = StyleSheet.create({
    container: {
      flex: 1,
@@ -315,7 +309,7 @@ import React, { useState, useEffect, useRef } from 'react';
    icon: {
      position: 'absolute',
      right: 35,
-     top: 9, // Adjust top position based on input height and margin
+     top: 9, 
    },
    errorText: {
      color: 'red',

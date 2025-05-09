@@ -435,40 +435,6 @@ const pieChartData = [
       style={{ alignItems: 'center', marginHorizontal: 20 }}
       onPress={() => {
         Animated.sequence([
-          Animated.timing(footerIcon4Jump, {
-            toValue: -10,
-            duration: 100,
-            useNativeDriver: true,
-          }),
-          Animated.timing(footerIcon4Jump, {
-            toValue: 0,
-            duration: 100,
-            useNativeDriver: true,
-          }),
-        ]).start(() => {
-          navigation.navigate('WalletPage', {
-            income: incomeValue,
-            monthlyExpenses: expenseValue,
-            totalSavings: savingsValue,
-          });
-        });
-      }}
-    >
-      <Animated.Image
-        source={require('./assets/walletIcon.png')}
-        style={[
-          styles.footerIcon4,
-          { transform: [{ translateY: footerIcon4Jump }] },
-        ]}
-      />
-      <Text style={styles.footerIcon4Text}>Budget</Text>
-    </TouchableOpacity>
-
-      <TouchableOpacity
-      activeOpacity={0.7}
-      style={{ alignItems: 'center', marginHorizontal: 20 }}
-      onPress={() => {
-        Animated.sequence([
           Animated.timing(footerIcon5Jump, {
             toValue: -10,
             duration: 100,
@@ -547,13 +513,13 @@ const pieChartData = [
       backgroundColor="transparent"
       paddingLeft="15"
       chartConfig={{
-        color: (opacity = 1) => `rgba(0, 0, 0, 0)`, // Make slice labels transparent
-        labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Keep legend label color
+        color: (opacity = 1) => `rgba(0, 0, 0, 0)`, 
+        labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, 
       }}
       style={{
         borderRadius: 16,
       }}
-      hasLegend={true} // Ensure the legend is displayed
+      hasLegend={true} 
     />
   )}
 </View>

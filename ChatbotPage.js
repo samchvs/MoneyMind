@@ -101,7 +101,6 @@ const ChatbotPage = () => {
   };
 
   const handleTapGreeting = () => {
-    // List of greetings/messages to display
     const messages = [
       "Hi! I am Budgie! Your AI Financial Assistant",
       "I will guide you to make wise spending choices",
@@ -111,7 +110,6 @@ const ChatbotPage = () => {
       "Hey there, superstar! 🌟 Ready to take control of your budget?",
     ];
 
-    // Randomly pick a greeting from the list
     const randomIndex = Math.floor(Math.random() * messages.length);
     setGreeting(messages[randomIndex]);
   };
@@ -153,7 +151,6 @@ const ChatbotPage = () => {
                 placeholder="Enter your monthly income or ask about any financial concerns..."
                 value={prompt}
                 onChangeText={setPrompt}
-                //keyboardType="numeric"
                 multiline
                 placeholderTextColor="#aaa"
               />
@@ -188,7 +185,7 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     padding: 20,
-    paddingBottom: 100, // Add extra padding at the bottom
+    paddingBottom: 100, 
   },
   heading: {
     marginTop: 20,
