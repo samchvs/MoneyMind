@@ -330,12 +330,6 @@ const pieChartData = [
             <Text style={styles.username}>{username}!</Text>
             <Text style={styles.wallet}>Your Wallet</Text>
           </View>
-          <TouchableOpacity onPress={() => {}}>
-             <Image
-               source={require('./assets/settings_icon.png')}
-               style={styles.icon}
-             />
-          </TouchableOpacity>
         </View>
 
         <View style={styles.footer}>
