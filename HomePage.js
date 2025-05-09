@@ -17,6 +17,8 @@ import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useUser } from './UserContext';
 import { MaterialIcons } from '@expo/vector-icons';
+import { PieChart } from "react-native-chart-kit";
+
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -43,7 +45,8 @@ export default function HomePage({ route }) {
   const [expenseValue, setExpenseValue] = useState('0.00');
   const [savingsValue, setSavingsValue] = useState('0.00');
   const navigation = useNavigation();
-
+  const total = parseFloat(incomeValue) + parseFloat(expenseValue) + parseFloat(savingsValue);
+  const isEmpty = total === 0;
   const [incomeRecordId, setIncomeRecordId] = useState(null);
 
 
@@ -285,6 +288,35 @@ export default function HomePage({ route }) {
   );
 };
 
+const totalChart = parseFloat(incomeValue) + parseFloat(expenseValue) + parseFloat(savingsValue);
+
+const pieChartData = [
+  {
+    name: 'Income',
+    population: parseFloat(incomeValue),
+    color: '#3F6FFF',
+    legendFontColor: '#fff',
+    legendFontSize: 14,
+  },
+  {
+    name: 'Expenses',
+    population: parseFloat(expenseValue),
+    color: '#F44336',
+    legendFontColor: '#fff',
+    legendFontSize: 14,
+  },
+  {
+    name: 'Savings',
+    population: parseFloat(savingsValue),
+    color: '#5BFF66',
+    legendFontColor: '#fff',
+    legendFontSize: 14,
+  },
+];
+
+
+
+
   return (
     <LinearGradient
       colors={['#000000', '#171717', '#232323', '#3b3b3b', '#4f4f4f']}
@@ -464,7 +496,6 @@ export default function HomePage({ route }) {
 
 
         </View>
-
         <TouchableWithoutFeedback onPress={() => handlePress('Income')}>
           <Animated.View
             style={[styles.customBox, { transform: [{ translateY: jumpValue1 }] }]}
@@ -500,6 +531,32 @@ export default function HomePage({ route }) {
             minimumFontScale={0.5}>₱{savingsValue}</Text>
           </Animated.View>
         </TouchableWithoutFeedback>
+
+        <View style={styles.chartContainer}>
+  {isEmpty ? (
+    <View>
+    <Text style={styles.noDataText}>No Data for chart</Text>
+    <Text style={styles.noDataText1}>Enter your amounts to get started.</Text>
+  </View>
+  ) : (
+    <PieChart
+      data={pieChartData}
+      width={screenWidth - 40}
+      height={230}
+      accessor="population"
+      backgroundColor="transparent"
+      paddingLeft="15"
+      chartConfig={{
+        color: (opacity = 1) => `rgba(0, 0, 0, 0)`, // Make slice labels transparent
+        labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Keep legend label color
+      }}
+      style={{
+        borderRadius: 16,
+      }}
+      hasLegend={true} // Ensure the legend is displayed
+    />
+  )}
+</View>
 
        <Modal
           animationType="slide"
@@ -817,4 +874,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  chartContainer: {
+  marginTop: 250, 
+  paddingHorizontal: 20,
+},
+noDataText: {
+  color: '#aaa',
+  fontSize: 24,
+  textAlign: 'center',
+  marginTop: 80,
+  fontWeight: 'bold',
+},
+noDataText1: {
+  color: '#aaa',
+  fontSize: 15,
+  textAlign: 'center',
+  marginTop: 10,
+  
+}
 });
