@@ -8,7 +8,7 @@ import LoginPage from './LoginPage';
 import HomePage from './HomePage';
 import RegisterPage from './RegisterPage';
 import SavingsPage from './SavingsPage';
-import ListPage from './Listpage';
+import ListPage from './ListPage';
 import WalletPage from './WalletPage';
 import AiPage from './AiPage';
 import GenAiPage from './GenAiPage';
