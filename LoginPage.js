@@ -1,65 +1,109 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, TextInput, Text, Image, Animated, TouchableOpacity, Vibration } from 'react-native';  
+import { StyleSheet, TextInput, Text, Image, Animated, TouchableOpacity, Vibration, Alert, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useSQLiteContext } from 'expo-sqlite';
+import { InitializeDatabase } from './RegisterPage';
+import { useUser } from './UserContext';
 
 export default function LoginPage({ navigation }) {
-  const [username, setUsername] = useState('');
-  const [error, setError] = useState(''); 
-  const logoMoveUp = useRef(new Animated.Value(0)).current;      
-  const moneyMindMoveUp = useRef(new Animated.Value(0)).current;  
-  const inputOpacity = useRef(new Animated.Value(0)).current;     
-  const buttonOpacity = useRef(new Animated.Value(0)).current;   
-  const buttonMoveUp = useRef(new Animated.Value(100)).current;   
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const { loggedInUser, setLoggedInUser } = useUser(); 
+    const [error, setError] = useState('');
+    const logoMoveUp = useRef(new Animated.Value(0)).current;
+    const moneyMindMoveUp = useRef(new Animated.Value(0)).current;
+    const inputOpacity = useRef(new Animated.Value(0)).current;
+    const buttonOpacity = useRef(new Animated.Value(0)).current;
+    const buttonMoveUp = useRef(new Animated.Value(100)).current;
+    const [dbReady, setDbReady] = useState(false);
 
-  useEffect(() => {
-    Animated.parallel([
-      Animated.spring(logoMoveUp, {
-        toValue: -100,
-        friction: 20, 
-        tension: 30, 
-        useNativeDriver: true,
-      }),
-      Animated.spring(moneyMindMoveUp, {
-        toValue: -100,
-        friction: 10,
-        tension: 50,
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
-      Animated.timing(inputOpacity, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver: true,
-      }).start(() => {
-        Animated.parallel([ 
-          Animated.timing(buttonOpacity, {
-            toValue: 1,
-            duration: 500,
-            useNativeDriver: true,
-          }),
-          Animated.spring(buttonMoveUp, {
-            toValue: 0,
-            friction: 6,
-            tension: 50,
-            useNativeDriver: true,
-          }),
-        ]).start();
-      });
-    });
-  }, []);
+    const db = useSQLiteContext();
 
-  const handleLogin = () => {
-    if (username.trim() === '') {
-      setError('Please enter your username before proceeding.');
-      Vibration.vibrate(); 
-    } else {
-      setError(''); 
-      console.log('Navigating with username:', username); //debugger in console but works sa app na
-      navigation.navigate('HomePage', { username });
-    }
-  };
+    useEffect(() => {
+        const initialize = async () => {
+            if (db) {
+                await InitializeDatabase(db);
+                setDbReady(true);
+            }
+            Animated.parallel([
+                Animated.spring(logoMoveUp, {
+                    toValue: -100,
+                    friction: 20,
+                    tension: 30,
+                    useNativeDriver: true,
+                }),
+                Animated.spring(moneyMindMoveUp, {
+                    toValue: -100,
+                    friction: 10,
+                    tension: 50,
+                    useNativeDriver: true,
+                }),
+            ]).start(() => {
+                Animated.timing(inputOpacity, {
+                    toValue: 1,
+                    duration: 500,
+                    useNativeDriver: true,
+                }).start(() => {
+                    Animated.parallel([
+                        Animated.timing(buttonOpacity, {
+                            toValue: 1,
+                            duration: 500,
+                            useNativeDriver: true,
+                        }),
+                        Animated.spring(buttonMoveUp, {
+                            toValue: 0,
+                            friction: 6,
+                            tension: 50,
+                            useNativeDriver: true,
+                        }),
+                    ]).start();
+                });
+            });
+        };
 
+        initialize();
+    }, [db]);
+
+    const handleLogin = async () => {
+        if (!dbReady) {
+            setError('Database is not ready. Please try again later.');
+            return;
+        }
+
+        if (!username || !password || username.trim() === '' || password.trim() === '') {
+            setError('Please enter both username and password.');
+            Vibration.vibrate();
+            return;
+        }
+
+        try {
+            const validUser = await db.getFirstAsync(
+                'SELECT * FROM users WHERE username = ? and password = ?',
+                [username, password]
+            );
+
+            if (validUser) {
+                const userData = { user_id: validUser.user_id, username: validUser.username };
+                setLoggedInUser(userData);
+                console.log('LoginPage - User set in context:', userData);
+            } else {
+                setError('Invalid username or password.');
+                Vibration.vibrate();
+            }
+        } catch (err) {
+            console.error('Login failed:', err);
+            setError('Login failed. Please try again.');
+        }
+    };
+
+    useEffect(() => {
+        if (loggedInUser) {
+            console.log('LoginPage - Navigating to HomePage');
+            navigation.navigate('HomePage', { username: loggedInUser.username });
+        }
+    }, [loggedInUser, navigation]);
+  
   return (
     <LinearGradient
       colors={['#000000', '#171717', '#171717', '#232323', '#3b3b3b', '#3b3b3b', '#4f4f4f']}
@@ -83,21 +127,20 @@ export default function LoginPage({ navigation }) {
 
       }
       <Animated.View style={[styles.inputWrapper, { opacity: inputOpacity }]}>
-        <Text style={styles.floatingLabel}>Username</Text>
         <TextInput
           style={styles.input}
           placeholder="Enter Username"
           placeholderTextColor="#808080"
           value={username}
-          onChangeText={(text) => {
-            if (text.length > 15) {
-              setError('Username cannot exceed 15 characters'); 
-              Vibration.vibrate(); 
-            } else {
-              setError(''); 
-              setUsername(text); 
-            }
-          }}
+          onChangeText={setUsername}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Enter Password"
+          placeholderTextColor="#808080"
+          value={password}
+          secureTextEntry
+          onChangeText={setPassword}
         />
         <Ionicons
           name="checkmark-circle"
@@ -111,10 +154,16 @@ export default function LoginPage({ navigation }) {
       {}
       <Animated.View style={{ opacity: buttonOpacity, transform: [{ translateY: buttonMoveUp }] }}>
         <TouchableOpacity style={styles.buttonContainer} onPress={handleLogin} activeOpacity={0.8}>
-          <Text style={styles.buttonText}>Continue</Text>
+          <Text style={styles.buttonText}>Log In</Text>
         </TouchableOpacity>
+        <Pressable style = {styles.link} onPress = {() => navigation.navigate('RegisterPage')}>
+        <Text style={styles.linkText}>
+          Don't have an account? <Text style={styles.underline}>Register.</Text>
+        </Text>
+        </Pressable>
       </Animated.View>
     </LinearGradient>
+  
   );
 }
 
@@ -141,47 +190,45 @@ const styles = StyleSheet.create({
     marginTop: -90, 
   },
   inputWrapper: {
-    width: '85%',
+    width: '100%',
     position: 'relative',
     marginTop: -100,
-    marginLeft: 40,
-  },
-  floatingLabel: {
-    position: 'absolute',
-    fontSize: 10,
-    color: '#8A8A8A',
-    fontWeight: 'bold',
-    zIndex: 1,
-    marginTop: -4,
-    left: 17,
+    marginBottom: -10,
+    marginLeft: 7,
+    paddingHorizontal: 20,
   },
   input: {
     height: 50,
-    width: 250,
+    width: '100%',
     borderColor: '#fff',
     borderWidth: 1,
     borderRadius: 30,
-    paddingHorizontal: 15, 
+    paddingHorizontal: 20, 
     paddingRight: 40,
+    padding: 10,
     fontSize: 16,
     color: '#fff',
     marginTop: -9,
+    marginBottom: 25,
     paddingTop: 15,
     fontWeight: 'bold',
+    marginVertical: 5,
   },
   icon: {
     position: 'absolute',
-    right: 15,
-    top: 17,
+    right: 35,
+    top: 9,
   },
   errorText: {
     color: 'red',
     fontSize: 12,
-    marginTop: 5,
+    marginTop: -10,
     fontWeight: 'bold',
     textAlign: 'center', 
     flexWrap: 'wrap',
     width: 250, 
+    left: 20,
+    marginBottom: 10,
   },
   buttonContainer: {
     width: 250,
@@ -199,6 +246,17 @@ const styles = StyleSheet.create({
     color: '#000000',
     fontWeight: 'bold',
   },
+  link: {
+    marginTop: 10,
+  },
+  linkText: {
+    color: '#fff',
+    textAlign: 'center',
+  },
+  underline: {
+    textDecorationLine: 'underline',
+    color: '#fff', 
+  },
   calcGridContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -209,7 +267,7 @@ const styles = StyleSheet.create({
   numberGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    width: 180, // Adjust based on button size
+    width: 180, 
     justifyContent: 'center',
   },
   
