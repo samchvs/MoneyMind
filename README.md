@@ -8,8 +8,7 @@ To Run:
 - npm start  
   
 Note:
-This mobile application was created as a requirement for one of our class. This was rushed so the designs/layout were not polished but fully functional! 
-We also created two separate AI applications for this app: chatbot and AI budgeting generation. Once not busy anymore, will try to polish this more and integrate both AI integrations into one!
+This mobile application was created as a requirement for one of our class. We created two separate AI applications for this app: chatbot and AI budgeting generation. Once not busy anymore, will try to polish this more and integrate both AI integrations into one!
 
 Members:
 - Chaves, Samantha
