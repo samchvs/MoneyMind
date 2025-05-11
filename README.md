@@ -12,4 +12,8 @@ This mobile application was created as a requirement for one of our class. This 
 We also created two separate AI applications for this app: chatbot and AI budgeting generation. Once not busy anymore, will try to polish this more and integrate both AI integrations into one!
 
 Members:
-Chaves, Samantha  Galang, Janelle Carla  Jagonoy, Jhon Mar Banzon, Zane  Valdez, Karelle
+- Chaves, Samantha
+- Galang, Janelle Carla
+- Jagonoy, Jhon Mar
+- Banzon, Zane
+- Valdez, Karelle
