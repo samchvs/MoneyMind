@@ -18,7 +18,7 @@ const GenAiPage = () => {
   const [error, setError] = useState(null);
   const [currentIncomeState, setCurrentIncomeState] = useState(null);
 
-  const BACKEND_URL = 'http://192.168.1.11:5001'; // Ensure this is your correct backend URL
+  const BACKEND_URL = 'http://jaest.pythonanywhere.com'; // Ensure this is your correct backend URL
 
   const fetchUserIncome = useCallback(async () => {
     if (!db || !loggedInUserId) {
@@ -76,7 +76,7 @@ const GenAiPage = () => {
         },
         body: JSON.stringify({
           user_id: loggedInUserId,
-          current_income: income,
+          user_income: income,
         }),
         signal: controller.signal
       });

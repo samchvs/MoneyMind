@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions, ScrollView, TextInput, TouchableOpacity, Modal, Alert } from 'react-native'; // Import Alert
+import { View, Text, StyleSheet, Dimensions, ScrollView, TextInput, TouchableOpacity, Modal, Alert } from 'react-native'; 
 import { LinearGradient } from 'expo-linear-gradient';
 import { PieChart } from 'react-native-chart-kit';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { useSQLiteContext } from 'expo-sqlite';
-import { InitializeDatabase } from './RegisterPage'; // Assuming InitializeDatabase is exported from RegisterPage
-import { useUser } from './UserContext'; // Import useUser context
+import { InitializeDatabase } from './RegisterPage';
+import { useUser } from './UserContext';
 
 const { width } = Dimensions.get('window');
 
-export default function SavingsPage({ route, navigation }) { // Pass navigation prop
+export default function SavingsPage({ route, navigation }) { 
   const db = useSQLiteContext();
-  // Get logged-in user from context
   const { loggedInUser } = useUser();
-  const loggedInUserId = loggedInUser?.user_id; // Use user_id from context
+  const loggedInUserId = loggedInUser?.user_id;
 
   const [savings, setSavings] = useState('');
   const [goal, setGoal] = useState('');
@@ -26,9 +25,8 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
   const [selectedDate, setSelectedDate] = useState(null);
   const [isGoalSet, setIsGoalSet] = useState(false);
   const remaining = Math.max(parsedGoal - parsedSavings, 0);
-  const [dbReady, setDbReady] = useState(false); // State to track if DB is ready
+  const [dbReady, setDbReady] = useState(false); 
 
-  // Effect to initialize the database when the db object is available
   useEffect(() => {
       const setupDatabase = async () => {
           if (db) {
@@ -44,9 +42,8 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
       };
 
       setupDatabase();
-  }, [db]); // Depend on db becoming available
+  }, [db]);
 
-  // Effect to fetch goal and contributions when DB is ready and user is logged in
   useEffect(() => {
       const fetchSavingsData = async () => {
           console.log('SavingsPage - Attempting to fetch data...');
@@ -55,10 +52,9 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
 
           if (dbReady && loggedInUserId) {
               try {
-                   // Use getFirstAsync for single row
                   const latestGoal = await db.getFirstAsync(
                       'SELECT target_amount, target_date FROM savings_goals WHERE user_id = ? ORDER BY id DESC LIMIT 1',
-                       [loggedInUserId] // Filter by user_id
+                       [loggedInUserId]
                   );
 
                   console.log('SavingsPage - Fetched latestGoal:', latestGoal);
@@ -69,10 +65,9 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
                       setIsGoalSet(true);
                       console.log('SavingsPage - Goal found.');
 
-                      // Use getFirstAsync for single aggregated value
                       const totalContributions = await db.getFirstAsync(
                           'SELECT SUM(amount) AS total_contributed FROM savings_contributions WHERE savings_goal_id = (SELECT id FROM savings_goals WHERE user_id = ? ORDER BY id DESC LIMIT 1)',
-                          [loggedInUserId] // Ensure contributions are for the current user's latest goal
+                          [loggedInUserId] 
                       );
 
                       console.log('SavingsPage - Fetched totalContributions:', totalContributions);
@@ -83,7 +78,6 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
                           setSavings('0');
                       }
                   } else {
-                      // No goal set for this user
                       console.log('SavingsPage - No goal found for user.');
                       setIsGoalSet(false);
                       setGoal('0');
@@ -100,7 +94,7 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
       };
 
       fetchSavingsData();
-  }, [dbReady, loggedInUserId]); // Depend on dbReady and loggedInUserId
+  }, [dbReady, loggedInUserId]);
 
 
   const showDatePicker = () => {
@@ -144,27 +138,18 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
     try {
       const formattedDateForDB = selectedDate.toISOString();
 
-      // Check if the user already has an active goal (optional, based on your app logic)
-      // If you only allow one goal at a time per user:
-      // const existingGoal = await db.getFirstAsync('SELECT id FROM savings_goals WHERE user_id = ? ORDER BY id DESC LIMIT 1', [loggedInUserId]);
-      // if (existingGoal) { Alert.alert('Goal Exists', 'You already have an active savings goal.'); return; }
-
-      const result = await db.runAsync( // Use runAsync for insert operations
+      const result = await db.runAsync(
         'INSERT INTO savings_goals (user_id, target_amount, target_date) VALUES (?, ?, ?)',
         [loggedInUserId, parsedGoalAmount, formattedDateForDB]
       );
       console.log('SavingsPage - INSERT result:', result);
 
 
-      if (result.changes > 0) { // Check changes for runAsync success
+      if (result.changes > 0) {
         console.log('SavingsPage - Goal saved successfully');
-        setIsGoalSet(true); // Mark goal as set
-        setGoalDateModalVisible(false); // Close the modal
-        setSavings('0'); // Reset savings for the new goal (or fetch existing if you allow multiple goals)
-        // Re-fetch data to update the chart and progress message
-        // This will be triggered by the dependency array [dbReady, loggedInUserId] on the fetch effect
-        // after setIsGoalSet(true) potentially causes a re-render.
-        // A more explicit re-fetch could also be added here if needed.
+        setIsGoalSet(true);
+        setGoalDateModalVisible(false); 
+        setSavings('0');
       } else {
         console.error('SavingsPage - Error saving savings goal: Insert failed.');
         Alert.alert('Save Error', 'Failed to save your savings goal.');
@@ -187,26 +172,19 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
             {
                 text: "Yes",
                 onPress: async () => {
-                    // Optional: Delete the current goal and its contributions
-                    // if you only allow one active goal at a time.
-                    // If you want to keep history, you might just mark the old goal as completed
-                    // or query for only "active" goals. For simplicity, let's assume deleting the latest goal for this user.
 
                     if (dbReady && loggedInUserId) {
                         try {
-                            // Find the ID of the latest goal for the user
                             const latestGoal = await db.getFirstAsync(
                                 'SELECT id FROM savings_goals WHERE user_id = ? ORDER BY id DESC LIMIT 1',
                                 [loggedInUserId]
                             );
 
                             if (latestGoal) {
-                                // Deleting the goal will cascade delete contributions due to foreign key
                                 await db.runAsync('DELETE FROM savings_goals WHERE id = ?', [latestGoal.id]);
                                 console.log(`Deleted goal ${latestGoal.id} and its contributions.`);
                             }
 
-                            // Reset state
                             setGoal('');
                             setIsGoalSet(false);
                             setSelectedDate(null);
@@ -230,20 +208,19 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
     {
       name: 'Saved',
       amount: parsedSavings,
-      color: '#00cc99', // Green for saved
-      legendFontColor: '#fff', // Make legend text visible
+      color: '#00cc99', 
+      legendFontColor: '#fff',
       legendFontSize: 14,
     },
     {
       name: 'Remaining',
-      amount: remaining, // Use the calculated remaining
-      color: '#444', // Darker color for remaining
-      legendFontColor: '#fff', // Make legend text visible
+      amount: remaining, 
+      color: '#444', 
+      legendFontColor: '#fff', 
       legendFontSize: 14,
     },
   ];
 
-   // Adjust chart data if the total goal is 0 or less to avoid issues
    const chartData = parsedGoal <= 0 ?
    [
        {
@@ -270,7 +247,7 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
         month: 'long',
         day: 'numeric',
       })
-    : 'No date set'; // Default text if no date is selected
+    : 'No date set'; 
 
   const handleAddFunds = async () => {
     const additional = parseFloat(modalInput);
@@ -292,7 +269,6 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
     }
 
     try {
-      // Get the ID of the current active goal for the user
       const goalResult = await db.getFirstAsync(
         'SELECT id FROM savings_goals WHERE user_id = ? ORDER BY id DESC LIMIT 1',
         [loggedInUserId]
@@ -300,16 +276,16 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
 
       if (goalResult && goalResult.id) {
         const currentGoalId = goalResult.id;
-        const contributionResult = await db.runAsync( // Use runAsync for insert
+        const contributionResult = await db.runAsync( 
           'INSERT INTO savings_contributions (savings_goal_id, amount) VALUES (?, ?)',
           [currentGoalId, additional]
         );
        console.log('SavingsPage - Add funds INSERT result:', contributionResult);
 
-        if (contributionResult.changes > 0) { // Check changes for runAsync success
+        if (contributionResult.changes > 0) {
           console.log('SavingsPage - Savings contribution saved successfully.');
           const currentSavings = parseFloat(savings) || 0;
-          setSavings((currentSavings + additional).toFixed(2).toString()); // Update state and format
+          setSavings((currentSavings + additional).toFixed(2).toString());
           setModalInput('');
           setModalVisible(false);
         } else {
@@ -336,21 +312,20 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
 
         <View style={styles.chartWrapper}>
           <PieChart
-            data={chartData} // Use adjusted chartData
+            data={chartData}
             width={width - 40}
             height={220}
             chartConfig={{
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // White labels
+              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
               labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
             }}
             accessor="amount"
             backgroundColor="transparent"
             paddingLeft="15"
-            hasLegend={false} // We create a custom legend below
+            hasLegend={false}
           />
         </View>
 
-        {/* Custom Legend */}
         <View style={styles.customLegend}>
           {chartData.map((item, index) => (
             <View key={index} style={styles.legendItem}>
@@ -383,14 +358,13 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
               </Text>
             )
           )}
-           {!isGoalSet && ( // Show message if no goal is set
+           {!isGoalSet && (
                <Text style={styles.progressMessage}>
                    No savings goal set yet. Tap "Set Goal" below to get started!
                </Text>
            )}
         </View>
 
-        {/* Add Funds Modal */}
         <Modal
           animationType="slide"
           transparent={true}
@@ -407,7 +381,7 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
                 placeholderTextColor="#aaa"
                 value={modalInput}
                 onChangeText={setModalInput}
-                maxLength={10} // Prevent excessively large inputs
+                maxLength={10}
               />
 
               <TouchableOpacity
@@ -420,8 +394,7 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
           </View>
         </Modal>
 
-        {/* Set Goal Section (Rectangle Box) */}
-        {!isGoalSet && ( // Only show the "Set Goal" box if no goal is set
+        {!isGoalSet && ( 
           <View style={styles.inputContainer}>
             <View style={styles.rectangle}>
               <Text style={styles.rectangleText}>You should set a target 🎯</Text>
@@ -435,8 +408,6 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
           </View>
         )}
 
-
-        {/* Set Goal Modal */}
         <Modal
           animationType="slide"
           transparent={true}
@@ -447,7 +418,6 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
             <View style={styles.modalContent1}>
               <Text style={styles.modalTitle1}>{isGoalSet ? 'Current Target' : 'Set Target'}</Text>
 
-              {/* Goal Amount Input */}
               <View style={styles.modalInputBox2}>
                 <TextInput
                   style={styles.modalTextInput2}
@@ -456,29 +426,25 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
                   placeholderTextColor="#999"
                   value={goal}
                   onChangeText={setGoal}
-                  editable={!isGoalSet} // Not editable if goal is already set
-                  maxLength={10} // Prevent excessively large inputs
+                  editable={!isGoalSet} 
+                  maxLength={10} 
                 />
               </View>
-
-              {/* Date Picker Trigger */}
               <TouchableOpacity onPress={showDatePicker} style={styles.modalInput1} disabled={isGoalSet}>
                 <Text style={{ color: selectedDate ? '#fff' : '#999' }}>
                   {selectedDate ? selectedDate.toLocaleDateString() : 'Select Target Date:'}
                 </Text>
               </TouchableOpacity>
 
-              {/* Date Picker Modal */}
               <DateTimePickerModal
                 isVisible={isDatePickerVisible}
                 mode="date"
                 onConfirm={handleConfirm}
                 onCancel={hideDatePicker}
-                minimumDate={new Date()} // Prevent selecting past dates for a goal
+                minimumDate={new Date()}
               />
 
-              {/* Set Goal Button */}
-              {!isGoalSet && ( // Only show the Set button if no goal is set
+              {!isGoalSet && ( 
                   <TouchableOpacity
                       style={styles.modalDoneButton1}
                       onPress={handleGoalDone}
@@ -489,9 +455,9 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
                   </TouchableOpacity>
               )}
 
-               {isGoalSet && ( // Show Close button if goal is set
+               {isGoalSet && ( 
                     <TouchableOpacity
-                       style={[styles.modalDoneButton1, {backgroundColor: '#555'}]} // Different color for Close
+                       style={[styles.modalDoneButton1, {backgroundColor: '#555'}]} 
                        onPress={() => setGoalDateModalVisible(false)}
                    >
                        <Text style={styles.modalDoneText1}>
@@ -512,7 +478,6 @@ export default function SavingsPage({ route, navigation }) { // Pass navigation 
           </Text>
         </View>
 
-        {/* Show New Goal Button only if the goal is met */}
         {isGoalSet && parsedSavings >= parsedGoal && (
           <TouchableOpacity style={styles.newGoalButton} onPress={handleStartNewGoal}>
             <Text style={styles.newGoalButtonText}>Start a New Goal</Text>
