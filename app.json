@@ -20,7 +20,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.moneymind"
+      "package": "com.anonymous.moneymind",
+      "minSdkVersion": 29
     },
     "web": {
       "favicon": "./assets/favicon.png"
